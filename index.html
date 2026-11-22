@@ -1,0 +1,2766 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deriva — Learn Calculus Visually</title>
+
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff5ff',
+              100: '#dbe8fe',
+              200: '#bfd7fe',
+              500: '#3b6cf5',
+              600: '#2b5be0',
+              700: '#1d4ed8',
+            },
+            navy: {
+              900: '#0f204b',
+              800: '#14295c',
+              700: '#17326d',
+            }
+          },
+          boxShadow: {
+            card: '0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.03)',
+            soft: '0 8px 24px rgba(15, 23, 42, 0.06)',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Base typography & smooth scrolling */
+    html, body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    /* Deep navy gradient for Auth left panel & Daily Insight banner */
+    .bg-navy-gradient {
+      background: linear-gradient(155deg, #0c1a3d 0%, #112454 50%, #17326d 100%);
+    }
+
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Custom range slider for Interactive Graph Lab */
+    input[type="range"].deriva-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      outline: none;
+    }
+    input[type="range"].deriva-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #3b6cf5;
+      border: 3px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(59, 108, 245, 0.45);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    input[type="range"].deriva-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    /* Fade-in animation for view switching */
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-view {
+      animation: fadeSlideIn 0.22s ease-out forwards;
+    }
+
+    /* Progress bar smooth width animation */
+    .progress-fill {
+      transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Animated typing dots for Gemini AI Tutor */
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: scale(0.75); opacity: 0.45; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+    .typing-dot {
+      animation: typingBounce 1.2s infinite ease-in-out both;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.16s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.32s; }
+  </style>
+</head>
+<body class="min-h-screen bg-[#f8fafc] text-slate-900 overflow-x-hidden">
+
+  <!-- ===================================================================== -->
+  <!-- TOAST NOTIFICATION CONTAINER                                          -->
+  <!-- ===================================================================== -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ===================================================================== -->
+  <!-- 1. AUTHENTICATION VIEWS (SIGN IN & SIGN UP)                           -->
+  <!-- ===================================================================== -->
+  <section id="view-auth" class="min-h-screen w-full flex flex-col lg:flex-row bg-white">
+    <!-- Left Navy Branding Panel -->
+    <div class="w-full lg:w-1/2 bg-navy-gradient text-white p-8 sm:p-12 lg:p-16 flex flex-col justify-between min-h-[340px] lg:min-h-screen relative overflow-hidden">
+      <!-- Subtle decorative glow -->
+      <div class="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full bg-brand-500/15 blur-3xl"></div>
+      <div class="pointer-events-none absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-indigo-400/10 blur-3xl"></div>
+
+      <!-- Brand Logo -->
+      <div class="relative z-10 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white text-xl font-bold shadow-md shadow-brand-500/30">
+          ∂
+        </div>
+        <div>
+          <div class="font-display font-bold text-lg leading-tight tracking-tight text-white">Deriva</div>
+          <div class="text-[10px] font-semibold tracking-[0.14em] uppercase text-blue-200/80">Learn Calculus Visually</div>
+        </div>
+      </div>
+
+      <!-- Center Hero Copy (Changes dynamically between Sign In & Sign Up) -->
+      <div class="relative z-10 my-10 lg:my-0 max-w-md">
+        <div id="auth-hero-formula" class="text-xl sm:text-2xl font-medium text-blue-300/90 mb-4 tracking-wide font-mono">
+          dy / dx
+        </div>
+        <h1 id="auth-hero-title" class="font-display text-3xl sm:text-4xl lg:text-[42px] font-extrabold leading-[1.15] tracking-tight text-white mb-5">
+          Welcome<br />back, learner.
+        </h1>
+        <p id="auth-hero-subtitle" class="text-sm sm:text-[15px] leading-relaxed text-blue-100/75">
+          Pick up where you left off. Every concept you master brings you one step closer to understanding Calculus.
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div class="relative z-10 text-xs text-blue-200/50">
+        © 2026 Deriva Learning Platform
+      </div>
+    </div>
+
+    <!-- Right White Form Panel -->
+    <div class="w-full lg:w-1/2 bg-white flex items-center justify-center p-6 sm:p-12 lg:p-16">
+      <div class="w-full max-w-[400px]">
+
+        <!-- SIGN IN FORM -->
+        <div id="auth-signin-box" class="animate-view">
+          <div class="text-[11px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-2">Welcome Back</div>
+          <h2 class="font-display text-2xl sm:text-[28px] font-bold text-slate-900 tracking-tight mb-1.5">Sign in to Deriva</h2>
+          <p class="text-sm text-slate-500 mb-7">Enter your details to continue your learning journey.</p>
+
+          <form id="form-signin" class="space-y-4" novalidate>
+            <div>
+              <label for="signin-email" class="block text-[11px] font-bold tracking-wider uppercase text-slate-700 mb-1.5">Email Address</label>
+              <input id="signin-email" type="email" placeholder="you@example.com"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition" />
+            </div>
+
+            <div>
+              <label for="signin-password" class="block text-[11px] font-bold tracking-wider uppercase text-slate-700 mb-1.5">Password</label>
+              <input id="signin-password" type="password" placeholder="Enter your password"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition" />
+              <div class="flex justify-end mt-1.5">
+                <button type="button" onclick="openForgotModal()" class="text-xs font-medium text-brand-500 hover:text-brand-600 transition">
+                  Forgot password?
+                </button>
+              </div>
+            </div>
+
+            <div id="signin-error" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2"></div>
+
+            <button type="submit"
+              class="w-full py-3 px-4 rounded-xl bg-brand-500 hover:bg-brand-600 active:scale-[0.99] text-white text-sm font-semibold shadow-sm shadow-brand-500/25 transition flex items-center justify-center gap-2">
+              <span>Sign in</span>
+              <span>→</span>
+            </button>
+          </form>
+
+          <div class="mt-4">
+            <button type="button" onclick="demoLogin()"
+              class="w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold transition">
+              Masuk cepat dengan Akun Demo →
+            </button>
+          </div>
+
+          <p class="text-center text-xs text-slate-500 mt-6">
+            New to Deriva?
+            <button type="button" onclick="switchAuthMode('signup')" class="font-semibold text-brand-500 hover:text-brand-600 ml-1">
+              Create an account
+            </button>
+          </p>
+        </div>
+
+        <!-- SIGN UP FORM -->
+        <div id="auth-signup-box" class="hidden animate-view">
+          <div class="text-[11px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-2">Get Started For Free</div>
+          <h2 class="font-display text-2xl sm:text-[28px] font-bold text-slate-900 tracking-tight mb-1.5">Create your account</h2>
+          <p class="text-sm text-slate-500 mb-7">Join Deriva and start learning Calculus visually.</p>
+
+          <form id="form-signup" class="space-y-4" novalidate>
+            <div>
+              <label for="signup-name" class="block text-[11px] font-bold tracking-wider uppercase text-slate-700 mb-1.5">Full Name</label>
+              <input id="signup-name" type="text" placeholder="Enter your full name"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition" />
+            </div>
+
+            <div>
+              <label for="signup-email" class="block text-[11px] font-bold tracking-wider uppercase text-slate-700 mb-1.5">Email Address</label>
+              <input id="signup-email" type="email" placeholder="you@example.com"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition" />
+            </div>
+
+            <div>
+              <label for="signup-password" class="block text-[11px] font-bold tracking-wider uppercase text-slate-700 mb-1.5">Password</label>
+              <input id="signup-password" type="password" placeholder="Create a password"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition" />
+            </div>
+
+            <div id="signup-error" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2"></div>
+
+            <button type="submit"
+              class="w-full py-3 px-4 rounded-xl bg-brand-500 hover:bg-brand-600 active:scale-[0.99] text-white text-sm font-semibold shadow-sm shadow-brand-500/25 transition flex items-center justify-center gap-2">
+              <span>Create account</span>
+              <span>→</span>
+            </button>
+          </form>
+
+          <p class="text-center text-xs text-slate-500 mt-6">
+            Already have an account?
+            <button type="button" onclick="switchAuthMode('signin')" class="font-semibold text-brand-500 hover:text-brand-600 ml-1">
+              Sign in
+            </button>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 2. SHARED WORKSPACE SHELL (DASHBOARD, MATERIALS, GRAPH, TUTOR, PROF)  -->
+  <!-- ===================================================================== -->
+  <section id="view-workspace" class="hidden min-h-screen w-full flex bg-[#f8fafc]">
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="mobile-sidebar-backdrop" onclick="toggleMobileSidebar(false)" class="fixed inset-0 bg-slate-900/40 z-40 hidden lg:hidden backdrop-blur-[1px]"></div>
+
+    <!-- Fixed Left Sidebar (240px) -->
+    <aside id="workspace-sidebar" class="fixed lg:sticky top-0 left-0 z-50 h-screen w-[240px] shrink-0 bg-white border-r border-slate-200/80 flex flex-col justify-between p-4 transition-transform duration-200 -translate-x-full lg:translate-x-0">
+      <div>
+        <!-- Brand Logo -->
+        <div class="flex items-center justify-between px-2 pt-1 pb-6">
+          <button onclick="navigateTo('dashboard')" class="flex items-center gap-2.5 text-left">
+            <div class="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white text-lg font-bold shadow-sm shadow-brand-500/30">
+              ∂
+            </div>
+            <div>
+              <div class="font-display font-bold text-[17px] leading-tight text-slate-900">Deriva</div>
+              <div class="text-[9px] font-bold tracking-[0.12em] uppercase text-slate-400 leading-tight">Learn Calculus<br />Visually</div>
+            </div>
+          </button>
+          <button onclick="toggleMobileSidebar(false)" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:bg-slate-100">
+            ✕
+          </button>
+        </div>
+
+        <!-- Section Label -->
+        <div class="px-3 mb-2 text-[10px] font-bold tracking-[0.12em] uppercase text-slate-400">
+          Learning Space
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="space-y-1" id="workspace-nav">
+          <button data-nav="dashboard" onclick="navigateTo('dashboard')"
+            class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Dashboard</span>
+          </button>
+
+          <button data-nav="materials" onclick="navigateTo('materials')"
+            class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span>Learning Materials</span>
+          </button>
+
+          <button data-nav="graph" onclick="navigateTo('graph')"
+            class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
+            <span>Interactive Graph</span>
+          </button>
+
+          <button data-nav="tutor" onclick="navigateTo('tutor')"
+            class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>AI Tutor</span>
+          </button>
+
+          <button data-nav="profile" onclick="navigateTo('profile')"
+            class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>My Profile</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Sidebar Footer: Streak Card + User Mini Profile -->
+      <div class="space-y-3 pt-4">
+        <div class="rounded-2xl bg-[#fff7ed] border border-amber-200/70 p-3.5">
+          <div class="text-base mb-1">🔥</div>
+          <div class="text-xs font-bold text-slate-900">7-day learning streak</div>
+          <p class="text-[11px] leading-snug text-amber-800/80 mt-0.5">
+            Keep your learning momentum going!
+          </p>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 px-1">
+          <button onclick="navigateTo('profile')" class="flex items-center gap-2.5 min-w-0 text-left group">
+            <div class="user-initial-badge w-8 h-8 rounded-full bg-brand-50 text-brand-600 font-bold text-xs flex items-center justify-center shrink-0">
+              S
+            </div>
+            <div class="min-w-0">
+              <div class="user-name-text text-xs font-bold text-slate-900 truncate group-hover:text-brand-600 transition">Student Name</div>
+              <div class="text-[10px] text-slate-400 truncate">Calculus Learner</div>
+            </div>
+          </button>
+          <button onclick="signOut()" title="Sign out"
+            class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Right Area -->
+    <div class="flex-1 min-w-0 flex flex-col min-h-screen">
+      <!-- Top Header Bar -->
+      <header class="sticky top-0 z-30 h-16 bg-white/95 backdrop-blur border-b border-slate-200/80 px-4 sm:px-8 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <!-- Mobile Hamburger -->
+          <button onclick="toggleMobileSidebar(true)" class="lg:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <!-- Breadcrumb -->
+          <div class="text-xs sm:text-sm truncate">
+            <span class="text-slate-400 font-medium">Deriva</span>
+            <span class="text-slate-300 mx-1.5">/</span>
+            <span id="header-breadcrumb" class="font-bold text-slate-900">Dashboard</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0 relative">
+          <span id="header-context-label" class="hidden sm:inline text-xs text-slate-400 font-medium">
+            Sunday, 22 November
+          </span>
+
+          <!-- Notification Bell -->
+          <button id="notification-btn" onclick="toggleNotificationPopover()" class="relative w-9 h-9 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 flex items-center justify-center text-slate-500 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-brand-500"></span>
+          </button>
+
+          <!-- Notification Popover -->
+          <div id="notification-popover" class="hidden absolute right-0 top-12 w-72 bg-white rounded-2xl border border-slate-200 shadow-soft p-4 z-50">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-slate-900">Notifications</span>
+              <span class="text-[10px] font-semibold text-brand-500 bg-brand-50 px-2 py-0.5 rounded-full">2 new</span>
+            </div>
+            <div class="space-y-2.5 text-xs">
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <div class="font-semibold text-slate-800">🔥 7-Day Streak Reached!</div>
+                <div class="text-slate-500 mt-0.5">Kamu konsisten belajar Kalkulus 7 hari berturut-turut.</div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-brand-50/50 border border-brand-100">
+                <div class="font-semibold text-slate-800">📘 Module 02 menunggumu</div>
+                <div class="text-slate-500 mt-0.5">Lanjutkan Rules of Differentiation (65% selesai).</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Avatar -->
+          <button onclick="navigateTo('profile')" class="user-initial-badge w-9 h-9 rounded-full bg-brand-50 hover:bg-brand-100 text-brand-600 font-bold text-xs flex items-center justify-center transition">
+            S
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Workspace Content -->
+      <main class="flex-1 p-4 sm:p-8 max-w-[1180px] w-full mx-auto">
+
+        <!-- =============================================================== -->
+        <!-- PAGE: DASHBOARD                                                 -->
+        <!-- =============================================================== -->
+        <div id="page-dashboard" class="workspace-page space-y-6 animate-view">
+          <!-- Page Header -->
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <div class="text-[11px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">Student Dashboard</div>
+              <h1 class="font-display text-2xl sm:text-[28px] font-bold text-slate-900 tracking-tight">
+                Good morning, <span id="dashboard-greeting-name">Student</span>! 👋
+              </h1>
+              <p class="text-sm text-slate-500 mt-1">Ready to continue your Calculus journey? Let's make today count.</p>
+            </div>
+            <div class="inline-flex items-center gap-2 self-start sm:self-auto px-3.5 py-2 rounded-full bg-white border border-slate-200/90 text-xs font-medium text-slate-600 shadow-card">
+              <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+              <span>Your learning overview</span>
+            </div>
+          </div>
+
+          <!-- 4 Stat Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <!-- Overall Progress -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-card">
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-500 flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"/></svg>
+                </div>
+                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">↗ 12%</span>
+              </div>
+              <div id="stat-overall-progress" class="font-display text-2xl font-extrabold text-slate-900">65%</div>
+              <div class="text-xs text-slate-500 mt-0.5">Overall progress</div>
+            </div>
+
+            <!-- Learning Streak -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-card">
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-lg">
+                  🔥
+                </div>
+                <span class="text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Keep it up</span>
+              </div>
+              <div class="font-display text-2xl font-extrabold text-slate-900">7 Days</div>
+              <div class="text-xs text-slate-500 mt-0.5">Learning streak</div>
+            </div>
+
+            <!-- Average Quiz Score -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-card">
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-500 flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10.7l-5 3.6 1.9 5.7L12 16.5 7.1 20 9 14.3 4 10.7l6.1-1.9L12 3z"/></svg>
+                </div>
+              </div>
+              <div id="stat-quiz-score" class="font-display text-2xl font-extrabold text-slate-900">85/100</div>
+              <div class="text-xs text-slate-500 mt-0.5">Average quiz score</div>
+            </div>
+
+            <!-- Total Learning Time -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-card">
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+                </div>
+              </div>
+              <div class="font-display text-2xl font-extrabold text-slate-900">12.5h</div>
+              <div class="text-xs text-slate-500 mt-0.5">Total learning time</div>
+            </div>
+          </div>
+
+          <!-- Middle 2-Column Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <!-- Left Column: Continue Learning + Learning Activity -->
+            <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 p-6 shadow-card flex flex-col justify-between gap-6">
+              <!-- Continue Learning -->
+              <div>
+                <div class="flex items-center justify-between mb-4">
+                  <h2 class="font-display font-bold text-[15px] text-slate-900">Continue Learning</h2>
+                  <button onclick="navigateTo('materials')" class="text-xs font-semibold text-brand-500 hover:text-brand-600 transition">
+                    View all modules →
+                  </button>
+                </div>
+
+                <div id="dashboard-continue-card" class="rounded-2xl bg-[#f4f8ff] border border-brand-100/80 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  <!-- Rendered dynamically via JS -->
+                </div>
+              </div>
+
+              <!-- Your Learning Activity Bar Chart -->
+              <div class="pt-2">
+                <div class="flex items-center justify-between mb-4">
+                  <h2 class="font-display font-bold text-[15px] text-slate-900">Your Learning Activity</h2>
+                  <span class="text-xs text-slate-400 font-medium">This week</span>
+                </div>
+
+                <div id="activity-chart" class="h-32 flex items-end justify-between gap-2 sm:gap-4 px-2 sm:px-4 pt-4 border-b border-slate-100 pb-2">
+                  <!-- Rendered via JS -->
+                </div>
+                <div class="flex items-center justify-between gap-2 sm:gap-4 px-2 sm:px-4 pt-2 text-[11px] font-semibold text-slate-400">
+                  <span class="flex-1 text-center">M</span>
+                  <span class="flex-1 text-center">T</span>
+                  <span class="flex-1 text-center">W</span>
+                  <span class="flex-1 text-center text-brand-500">T</span>
+                  <span class="flex-1 text-center">F</span>
+                  <span class="flex-1 text-center">S</span>
+                  <span class="flex-1 text-center">S</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Explore Deriva -->
+            <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200/80 p-6 shadow-card">
+              <h2 class="font-display font-bold text-[15px] text-slate-900 mb-4">Explore Deriva</h2>
+
+              <div class="grid grid-cols-2 gap-3.5">
+                <button onclick="navigateTo('materials')" class="group text-left p-4 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:bg-brand-50/30 transition shadow-sm hover:shadow">
+                  <div class="text-xl mb-3">📚</div>
+                  <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Study Materials</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">Explore all lessons</div>
+                </button>
+
+                <button onclick="navigateTo('graph')" class="group text-left p-4 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:bg-brand-50/30 transition shadow-sm hover:shadow">
+                  <div class="text-xl mb-3">📈</div>
+                  <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Graph Lab</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">Visualize derivatives</div>
+                </button>
+
+                <button onclick="navigateTo('tutor')" class="group text-left p-4 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:bg-brand-50/30 transition shadow-sm hover:shadow">
+                  <div class="text-xl mb-3">🤖</div>
+                  <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">AI Tutor</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">Ask your questions</div>
+                </button>
+
+                <button onclick="navigateTo('profile')" class="group text-left p-4 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:bg-brand-50/30 transition shadow-sm hover:shadow">
+                  <div class="text-xl mb-3">🏆</div>
+                  <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">My Progress</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">Track your growth</div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daily Calculus Insight Dark Navy Banner -->
+          <div onclick="nextDailyInsight()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();nextDailyInsight();}" role="button" tabindex="0" title="Klik untuk melihat insight lainnya"
+            class="rounded-2xl bg-navy-gradient text-white p-5 sm:p-6 flex items-start sm:items-center justify-between gap-4 shadow-soft cursor-pointer hover:brightness-110 transition group">
+            <div class="flex items-start sm:items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-xl shrink-0">
+                💡
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-0.5">
+                  <span class="font-display font-bold text-sm text-white">Daily Calculus Insight</span>
+                  <span id="insight-counter" class="text-[10px] font-semibold text-blue-200/70 bg-white/10 px-2 py-0.5 rounded-full">1 / 4</span>
+                </div>
+                <p id="daily-insight-text" class="text-xs sm:text-[13px] text-blue-100/80 leading-relaxed">
+                  A derivative tells us how quickly a function changes at a particular point. It's the foundation of understanding motion, growth, and optimization.
+                </p>
+              </div>
+            </div>
+            <span class="hidden sm:inline-flex text-[11px] font-semibold text-blue-200/80 group-hover:text-white shrink-0 transition">
+              Next tip →
+            </span>
+          </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- PAGE: LEARNING MATERIALS                                        -->
+        <!-- =============================================================== -->
+        <div id="page-materials" class="workspace-page hidden space-y-6 animate-view">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+              <div class="text-[11px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">Learning Center</div>
+              <h1 class="font-display text-2xl sm:text-[28px] font-bold text-slate-900 tracking-tight">Learning Materials</h1>
+              <p class="text-sm text-slate-500 mt-1">A structured learning path to master derivatives, one concept at a time.</p>
+            </div>
+            <span class="self-start sm:self-auto px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-[11px] font-bold tracking-wider uppercase">
+              4 Modules
+            </span>
+          </div>
+
+          <!-- Course Progress Card -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-display font-bold text-sm text-slate-900">Your course progress</span>
+              <span id="materials-progress-pct" class="font-display font-bold text-sm text-brand-500">25%</span>
+            </div>
+            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden mb-2.5">
+              <div id="materials-progress-bar" class="h-full bg-brand-500 rounded-full progress-fill" style="width: 25%"></div>
+            </div>
+            <div class="flex items-center justify-between text-xs text-slate-400">
+              <span id="materials-completed-text">1 of 4 modules completed</span>
+              <span>Keep learning!</span>
+            </div>
+          </div>
+
+          <!-- 4 Module Cards (Dynamic) -->
+          <div id="materials-module-list" class="space-y-3.5">
+            <!-- Rendered by JS -->
+          </div>
+
+          <!-- Bottom Final Quiz CTA -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="font-display font-bold text-[15px] text-slate-900">Ready for the final challenge?</h3>
+              <p class="text-xs text-slate-500 mt-0.5">Test your understanding across all four modules.</p>
+            </div>
+            <button onclick="openFinalQuiz()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-sm shadow-brand-500/25 transition shrink-0">
+              Take Final Quiz →
+            </button>
+          </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- PAGE: INTERACTIVE GRAPH LAB                                     -->
+        <!-- =============================================================== -->
+        <div id="page-graph" class="workspace-page hidden space-y-6 animate-view">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+              <div class="text-[11px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">Visual Learning Tool</div>
+              <h1 class="font-display text-2xl sm:text-[28px] font-bold text-slate-900 tracking-tight">Interactive Graph Lab</h1>
+              <p class="text-sm text-slate-500 mt-1">Explore the relationship between a function and its derivative.</p>
+            </div>
+            <span class="self-start sm:self-auto px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-[11px] font-bold tracking-wider uppercase">
+              Live Visualization
+            </span>
+          </div>
+
+          <!-- Main Visualizer Card -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card space-y-5">
+            <!-- Header + Function Selector -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="font-display font-bold text-base text-slate-900">Function visualizer</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Move the point or drag on the graph to explore the tangent and slope.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <label for="graph-fn-select" class="sr-only">Choose function</label>
+                <select id="graph-fn-select"
+                  class="px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 cursor-pointer">
+                  <option value="x2">f(x) = x²</option>
+                  <option value="x3">f(x) = x³</option>
+                  <option value="sin">f(x) = sin(x)</option>
+                  <option value="poly">f(x) = 0.5x² − x</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="flex flex-wrap items-center gap-5 text-xs font-medium text-slate-600">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
+                <span>Function f(x)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                <span>Derivative f'(x)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span>Tangent line</span>
+              </div>
+            </div>
+
+            <!-- High-DPI Canvas Container -->
+            <div id="graph-canvas-wrapper" class="relative w-full h-[320px] sm:h-[380px] rounded-2xl border border-slate-200/80 bg-[#fbfdff] overflow-hidden select-none touch-none">
+              <canvas id="calculus-canvas" class="w-full h-full block cursor-crosshair"></canvas>
+            </div>
+
+            <!-- Controls Bar -->
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+              <div class="flex items-center gap-3 bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-2.5 flex-1 sm:max-w-md">
+                <span class="text-xs font-semibold text-slate-600 whitespace-nowrap">
+                  Point x = <span id="graph-x-label" class="font-bold text-slate-900">1.0</span>
+                </span>
+                <input id="graph-x-slider" type="range" min="-3" max="3" step="0.1" value="1.0" class="deriva-slider flex-1" />
+              </div>
+              <button onclick="resetGraphView()" class="self-start sm:self-auto px-4 py-2.5 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-600 text-xs font-bold transition">
+                Reset view
+              </button>
+            </div>
+
+            <!-- 3 Live Readout Boxes -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div class="rounded-xl bg-slate-50/80 border border-slate-200/80 p-4">
+                <div class="text-[11px] font-semibold text-slate-500 mb-1">f(x)</div>
+                <div id="readout-fx" class="font-display text-xl font-extrabold text-slate-900">1.00</div>
+              </div>
+              <div class="rounded-xl bg-slate-50/80 border border-slate-200/80 p-4">
+                <div class="text-[11px] font-semibold text-slate-500 mb-1">f'(x)</div>
+                <div id="readout-dfx" class="font-display text-xl font-extrabold text-purple-600">2.00</div>
+              </div>
+              <div class="rounded-xl bg-slate-50/80 border border-slate-200/80 p-4">
+                <div class="text-[11px] font-semibold text-slate-500 mb-1">Tangent slope</div>
+                <div id="readout-slope" class="font-display text-xl font-extrabold text-emerald-600">2.00</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- How to read this graph -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card">
+            <h3 class="font-display font-bold text-sm text-slate-900 mb-1.5">How to read this graph</h3>
+            <p class="text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+              The <span class="font-semibold text-brand-600">blue curve</span> represents the original function f(x). The <span class="font-semibold text-purple-600">purple curve</span> represents its derivative f'(x). The <span class="font-semibold text-emerald-600">green line</span> is the tangent at the selected point. Its slope equals the derivative value at that point.
+            </p>
+          </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- PAGE: AI TUTOR                                                  -->
+        <!-- =============================================================== -->
+        <div id="page-tutor" class="workspace-page hidden space-y-5 animate-view">
+          <div>
+            <div class="text-[11px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">Your Personal Learning Assistant</div>
+            <h1 class="font-display text-2xl sm:text-[28px] font-bold text-slate-900 tracking-tight">Ask Your AI Tutor</h1>
+            <p class="text-sm text-slate-500 mt-1">A friendly space to ask questions and explore Calculus concepts.</p>
+          </div>
+
+          <!-- Chat Container -->
+          <div class="max-w-3xl bg-white rounded-2xl border border-slate-200/80 shadow-card overflow-hidden flex flex-col">
+            <!-- Chat Header -->
+            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-brand-500 text-white font-bold text-base flex items-center justify-center shadow-sm shadow-brand-500/30">
+                  ∂
+                </div>
+                <div>
+                  <div class="font-display font-bold text-sm text-slate-900">Deriva AI Assistant</div>
+                  <div class="flex items-center gap-1.5 text-[11px] font-medium text-emerald-600">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span>Online • Powered by Gemini LLM</span>
+                  </div>
+                </div>
+              </div>
+              <button onclick="resetChat()" class="text-[11px] font-semibold text-slate-400 hover:text-slate-600 transition">
+                Reset Chat
+              </button>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="tutor-messages" class="p-5 h-[360px] sm:h-[400px] overflow-y-auto space-y-4 bg-[#fcfdff]">
+              <!-- Rendered by JS -->
+            </div>
+
+            <!-- Suggestion Chips + Input -->
+            <div class="p-4 border-t border-slate-100 bg-white space-y-3">
+              <div class="flex flex-wrap gap-2">
+                <button onclick="sendQuickPrompt('Apa itu turunan?')" class="px-3 py-1.5 rounded-full border border-slate-200 bg-white hover:bg-brand-50 hover:border-brand-200 hover:text-brand-600 text-xs font-medium text-slate-700 transition">
+                  Apa itu turunan?
+                </button>
+                <button onclick="sendQuickPrompt('Jelaskan power rule')" class="px-3 py-1.5 rounded-full border border-slate-200 bg-white hover:bg-brand-50 hover:border-brand-200 hover:text-brand-600 text-xs font-medium text-slate-700 transition">
+                  Jelaskan power rule
+                </button>
+                <button onclick="sendQuickPrompt('Contoh soal turunan')" class="px-3 py-1.5 rounded-full border border-slate-200 bg-white hover:bg-brand-50 hover:border-brand-200 hover:text-brand-600 text-xs font-medium text-slate-700 transition">
+                  Contoh soal turunan
+                </button>
+                <button onclick="sendQuickPrompt('Hitung turunan f(x) = 3x² + 5x - 2')" class="px-3 py-1.5 rounded-full border border-slate-200 bg-white hover:bg-brand-50 hover:border-brand-200 hover:text-brand-600 text-xs font-medium text-slate-700 transition">
+                  Hitung turunan f(x) = 3x² + 5x - 2
+                </button>
+              </div>
+
+              <form id="form-tutor" class="flex items-center gap-2.5">
+                <input id="tutor-input" type="text" placeholder="Ask anything about derivatives..."
+                  class="flex-1 px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition disabled:bg-slate-50 disabled:text-slate-400" />
+                <button id="tutor-send-btn" type="submit"
+                  class="px-5 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-xs font-bold shadow-sm shadow-brand-500/25 transition flex items-center gap-1.5 shrink-0">
+                  <span>Send</span>
+                  <span>↑</span>
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-400 max-w-3xl">
+            Powered by Gemini AI · Penjelasan Kalkulus dan turunan langkah demi langkah.
+          </p>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- PAGE: MY PROFILE                                                -->
+        <!-- =============================================================== -->
+        <div id="page-profile" class="workspace-page hidden space-y-6 animate-view">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+              <div class="text-[11px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">Your Personal Space</div>
+              <h1 class="font-display text-2xl sm:text-[28px] font-bold text-slate-900 tracking-tight">My Learning Profile</h1>
+              <p class="text-sm text-slate-500 mt-1">Track your progress, celebrate achievements, and find room to grow.</p>
+            </div>
+            <button onclick="openEditProfileModal()"
+              class="self-start sm:self-auto px-4 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 shadow-card transition">
+              Edit profile
+            </button>
+          </div>
+
+          <!-- User Info Card -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center shrink-0">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="min-w-0">
+              <div class="user-name-text font-display font-bold text-lg text-slate-900 truncate">Student Name</div>
+              <div class="text-xs text-slate-500 mt-0.5 truncate">
+                <span class="user-email-text">student@email.com</span> • Calculus Learner
+              </div>
+              <span class="inline-block mt-2 px-2.5 py-0.5 rounded-md bg-brand-50 text-brand-600 text-[10px] font-bold tracking-wider uppercase">
+                Active Learner
+              </span>
+            </div>
+          </div>
+
+          <!-- 4 Stat Cards -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-card">
+              <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-base mb-3">🔥</div>
+              <div class="font-display text-2xl font-extrabold text-slate-900">7 days</div>
+              <div class="text-xs text-slate-500 mt-0.5">Current streak</div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-card">
+              <div class="w-9 h-9 rounded-xl bg-brand-50 text-brand-500 flex items-center justify-center mb-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              </div>
+              <div id="profile-lessons-count" class="font-display text-2xl font-extrabold text-slate-900">4</div>
+              <div class="text-xs text-slate-500 mt-0.5">Lessons completed</div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-card">
+              <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-500 flex items-center justify-center mb-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10.7l-5 3.6 1.9 5.7L12 16.5 7.1 20 9 14.3 4 10.7l6.1-1.9L12 3z"/></svg>
+              </div>
+              <div id="profile-quiz-score" class="font-display text-2xl font-extrabold text-slate-900">85%</div>
+              <div class="text-xs text-slate-500 mt-0.5">Average quiz score</div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-card">
+              <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center mb-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+              </div>
+              <div class="font-display text-2xl font-extrabold text-slate-900">12.5h</div>
+              <div class="text-xs text-slate-500 mt-0.5">Learning time</div>
+            </div>
+          </div>
+
+          <!-- Learning Evaluation -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card space-y-5">
+            <div class="flex items-center justify-between">
+              <h2 class="font-display font-bold text-base text-slate-900">Learning evaluation</h2>
+              <span class="px-2.5 py-1 rounded-full bg-brand-50 text-brand-600 text-[10px] font-bold tracking-wider uppercase">
+                Skill Overview
+              </span>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1.5">
+                  <span class="text-slate-700">Basic derivatives</span>
+                  <span class="text-slate-900">90%</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-brand-500 rounded-full progress-fill" style="width: 90%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1.5">
+                  <span class="text-slate-700">Power rule</span>
+                  <span class="text-slate-900">80%</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-brand-500 rounded-full progress-fill" style="width: 80%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1.5">
+                  <span class="text-slate-700">Chain rule</span>
+                  <span class="text-slate-900">55%</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-brand-500 rounded-full progress-fill" style="width: 55%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1.5">
+                  <span class="text-slate-700">Applications</span>
+                  <span class="text-slate-900">40%</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-brand-500 rounded-full progress-fill" style="width: 40%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 3. MODULE DETAIL VIEW (COURSE READER WITH DEDICATED SIDEBAR & TOC)    -->
+  <!-- ===================================================================== -->
+  <section id="view-module" class="hidden min-h-screen w-full flex bg-[#f8fafc]">
+    <!-- Mobile Course Sidebar Backdrop -->
+    <div id="mobile-course-backdrop" onclick="toggleMobileCourseSidebar(false)" class="fixed inset-0 bg-slate-900/40 z-40 hidden lg:hidden backdrop-blur-[1px]"></div>
+
+    <!-- Dedicated Left Course Sidebar -->
+    <aside id="course-sidebar" class="fixed lg:sticky top-0 left-0 z-50 h-screen w-[250px] shrink-0 bg-white border-r border-slate-200/80 flex flex-col p-4 transition-transform duration-200 -translate-x-full lg:translate-x-0">
+      <div class="flex items-center justify-between px-2 pt-1 pb-4">
+        <button onclick="navigateTo('dashboard')" class="flex items-center gap-2.5 text-left">
+          <div class="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white text-lg font-bold shadow-sm shadow-brand-500/30">
+            ∂
+          </div>
+          <div>
+            <div class="font-display font-bold text-[17px] leading-tight text-slate-900">Deriva</div>
+            <div class="text-[9px] font-bold tracking-[0.12em] uppercase text-slate-400 leading-tight">Learn Calculus<br />Visually</div>
+          </div>
+        </button>
+        <button onclick="toggleMobileCourseSidebar(false)" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:bg-slate-100">✕</button>
+      </div>
+
+      <button onclick="navigateTo('materials')" class="mb-5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-brand-600 hover:bg-slate-50 flex items-center gap-2 transition">
+        <span>←</span>
+        <span>Back to Materials</span>
+      </button>
+
+      <div class="px-3 mb-2 text-[10px] font-bold tracking-[0.12em] uppercase text-slate-400">
+        Course Content
+      </div>
+
+      <nav id="course-sidebar-list" class="space-y-1 flex-1 overflow-y-auto">
+        <!-- Rendered by JS -->
+      </nav>
+    </aside>
+
+    <!-- Main Module Content Area -->
+    <div class="flex-1 min-w-0 flex flex-col min-h-screen">
+      <!-- Top Bar -->
+      <header class="sticky top-0 z-30 h-16 bg-white/95 backdrop-blur border-b border-slate-200/80 px-4 sm:px-8 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <button onclick="toggleMobileCourseSidebar(true)" class="lg:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="text-xs sm:text-sm truncate">
+            <button onclick="navigateTo('dashboard')" class="text-slate-400 hover:text-brand-500 font-medium">Deriva</button>
+            <span class="text-slate-300 mx-1">/</span>
+            <button onclick="navigateTo('materials')" class="text-slate-400 hover:text-brand-500 font-medium">Learning Materials</button>
+            <span class="text-slate-300 mx-1">/</span>
+            <span id="module-breadcrumb-title" class="font-bold text-slate-900">Introduction to Derivatives</span>
+          </div>
+        </div>
+        <div class="hidden sm:block text-xs font-medium text-slate-400 shrink-0">
+          Calculus • Derivatives
+        </div>
+      </header>
+
+      <!-- Two-Column Body: Article + Sticky TOC -->
+      <div id="module-scroll-top" class="flex-1 p-4 sm:p-8 max-w-[1160px] w-full mx-auto">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-7 items-start">
+          <!-- Left Article Column -->
+          <div id="module-article-container" class="xl:col-span-9 space-y-5 animate-view">
+            <!-- Rendered by JS -->
+          </div>
+
+          <!-- Right Sticky TOC Column -->
+          <aside class="hidden xl:block xl:col-span-3 sticky top-24">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-card space-y-4">
+              <div class="font-display font-bold text-xs text-slate-900">On this page</div>
+              <ul id="module-toc-list" class="space-y-2 text-xs text-slate-500">
+                <!-- Rendered by JS -->
+              </ul>
+              <div class="rounded-xl bg-brand-50/70 border border-brand-100 p-3.5">
+                <div class="text-xs font-bold text-slate-900 mb-1">💡 Study tip</div>
+                <p class="text-[11px] leading-relaxed text-slate-600">
+                  Baca konsep dasar dulu, lalu kerjakan latihan soal di bawah sendiri.
+                </p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- MODALS (EDIT PROFILE, FINAL QUIZ, FORGOT PASSWORD, VIDEO PLAYER)      -->
+  <!-- ===================================================================== -->
+
+  <!-- Edit Profile Modal -->
+  <div id="modal-edit-profile" onclick="if(event.target===this) closeModal('modal-edit-profile')" class="hidden fixed inset-0 z-[80] flex items-center justify-center p-4 bg-slate-900/45 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl w-full max-w-md p-6 animate-view">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-display font-bold text-lg text-slate-900">Edit Profile</h3>
+        <button onclick="closeModal('modal-edit-profile')" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100">✕</button>
+      </div>
+      <form id="form-edit-profile" class="space-y-4">
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Full Name</label>
+          <input id="edit-profile-name" type="text" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">Email Address</label>
+          <input id="edit-profile-email" type="email" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500" />
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-edit-profile')" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="modal-forgot" onclick="if(event.target===this) closeModal('modal-forgot')" class="hidden fixed inset-0 z-[80] flex items-center justify-center p-4 bg-slate-900/45 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl w-full max-w-md p-6 animate-view">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-display font-bold text-lg text-slate-900">Reset Password</h3>
+        <button onclick="closeModal('modal-forgot')" class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100">✕</button>
+      </div>
+      <p class="text-xs text-slate-500 mb-4">Masukkan alamat email akun Deriva kamu untuk menerima tautan pengaturan ulang kata sandi.</p>
+      <form id="form-forgot" class="space-y-4">
+        <input id="forgot-email" type="email" required placeholder="you@example.com" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500" />
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-forgot')" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold">Kirim Tautan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Final Quiz Modal (5 Questions) -->
+  <div id="modal-final-quiz" onclick="if(event.target===this) closeModal('modal-final-quiz')" class="hidden fixed inset-0 z-[80] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-view">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-widest text-brand-500">Final Challenge</div>
+          <h3 class="font-display font-bold text-lg text-slate-900">Derivatives Comprehensive Quiz</h3>
+        </div>
+        <button onclick="closeModal('modal-final-quiz')" class="p-2 rounded-xl text-slate-400 hover:bg-slate-100">✕</button>
+      </div>
+      <div id="final-quiz-body" class="p-6 overflow-y-auto space-y-5 flex-1">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT APPLICATION LOGIC                                          -->
+  <!-- ===================================================================== -->
+  <script>
+    /* =======================================================================
+       1. COURSE DATA (MODULES 01 - 04 + FINAL QUIZ)
+       ======================================================================= */
+    const MODULES_DATA = [
+      {
+        id: 1,
+        num: '01',
+        title: 'Introduction to Derivatives',
+        shortDesc: 'Pengertian turunan, limit, dan laju perubahan.',
+        subtitle: 'Memahami makna turunan sebagai laju perubahan dan kemiringan garis singgung.',
+        badges: ['Beginner', '15 min read', 'Text + Video + Exercises'],
+        icon: '◇',
+        objectives: 'Setelah menyelesaikan modul ini, kamu diharapkan mampu menjelaskan konsep dasar turunan, mengenali rumus definisi limit, dan menerapkannya pada contoh fungsi sederhana.',
+        topics: [
+          {
+            id: 'topic-1',
+            label: 'TOPIC 01',
+            title: 'Apa itu turunan?',
+            body: 'Turunan adalah ukuran bagaimana cepatnya suatu fungsi berubah terhadap variabelnya. Contohnya, bila posisi benda berubah terhadap waktu, turunan posisi merupakan kecepatan sesaat benda tersebut.'
+          },
+          {
+            id: 'topic-2',
+            label: 'TOPIC 02',
+            title: 'Turunan sebagai gradien garis singgung',
+            body: 'Secara geometris, turunan di suatu titik menunjukkan kemiringan garis singgung kurva pada titik itu. Turunan positif menunjukkan fungsi naik, turunan negatif menunjukkan fungsi turun, dan turunan nol menunjukkan garis singgung mendatar.'
+          },
+          {
+            id: 'topic-3',
+            label: 'TOPIC 03',
+            title: 'Definisi menggunakan limit',
+            body: 'Turunan fungsi f(x) didefinisikan menggunakan limit saat perubahan nilai h mendekati nol untuk memperoleh laju perubahan sesaat pada titik x.'
+          }
+        ],
+        formula: "f'(x) = lim h→0 [f(x+h) − f(x)] / h",
+        exampleTitle: 'Contoh: f(x) = x²',
+        exampleSteps: [
+          "1. f'(x) = lim h→0 [(x + h)² − x²] / h",
+          "2. = lim h→0 [x² + 2xh + h² − x²] / h = lim h→0 [2xh + h²] / h",
+          "3. = lim h→0 (2x + h) = 2x",
+          "4. Jadi, f'(x) = 2x."
+        ],
+        videoTitle: 'Definisi Turunan Fungsi — Belajar Matematika SMA',
+        videoThumbText: 'DEFINISI TURUNAN FUNGSI',
+        videoUrl: 'https://www.youtube.com/results?search_query=definisi+turunan+fungsi+matematika+sma',
+        exercises: [
+          {
+            q: "1. Jika f(x) = x², berapakah f'(x)?",
+            options: ['A. x', 'B. 2x', 'C. x²'],
+            correct: 1,
+            explanation: "Menggunakan definisi limit: lim h→0 [(x+h)² - x²]/h = lim h→0 (2xh + h²)/h = lim h→0 (2x + h) = 2x."
+          },
+          {
+            q: "2. Secara geometris, turunan pada suatu titik menyatakan...",
+            options: ['A. Luas daerah di bawah kurva', 'B. Gradien garis singgung kurva', 'C. Titik potong sumbu-y'],
+            correct: 1,
+            explanation: "Turunan f'(a) secara geometris adalah kemiringan (gradien) garis singgung kurva y = f(x) tepat di titik x = a."
+          },
+          {
+            q: "3. Jika turunan positif pada suatu interval, fungsi cenderung ...",
+            options: ['A. Naik', 'B. Turun', 'C. Konstan'],
+            correct: 0,
+            explanation: "Ketika f'(x) > 0, laju perubahan bernilai positif sehingga nilai fungsi f(x) bergerak naik seiring bertambahnya x."
+          }
+        ]
+      },
+      {
+        id: 2,
+        num: '02',
+        title: 'Rules of Differentiation',
+        shortDesc: 'Power rule, constant rule, sum rule, dan difference rule.',
+        subtitle: 'Menguasai aturan-aturan dasar turunan untuk menghitung derivatif dengan cepat tanpa limit.',
+        badges: ['Beginner', '20 min read', 'Text + Video + Exercises'],
+        icon: '∫',
+        objectives: 'Kamu akan mampu menggunakan Constant Rule, Power Rule, Sum Rule, dan Difference Rule untuk menurunkan berbagai fungsi polinomial secara efisien.',
+        topics: [
+          {
+            id: 'topic-1',
+            label: 'TOPIC 01',
+            title: 'Constant Rule & Power Rule',
+            body: 'Turunan dari konstanta c selalu 0 karena nilainya tidak pernah berubah. Sementara itu, Power Rule menyatakan bahwa untuk f(x) = xⁿ, turunannya diperoleh dengan menurunkan pangkat n ke depan lalu mengurangi pangkatnya sebesar 1.'
+          },
+          {
+            id: 'topic-2',
+            label: 'TOPIC 02',
+            title: 'Constant Multiple Rule',
+            body: 'Jika sebuah fungsi dikalikan konstanta k, cukup kalikan konstanta tersebut dengan turunan fungsinya: d/dx [k · f(x)] = k · f\'(x).'
+          },
+          {
+            id: 'topic-3',
+            label: 'TOPIC 03',
+            title: 'Sum & Difference Rule',
+            body: 'Turunan dari penjumlahan atau pengurangan dua fungsi adalah jumlah atau selisih dari masing-masing turunannya: (f ± g)\'(x) = f\'(x) ± g\'(x).'
+          }
+        ],
+        formula: "d/dx (xⁿ) = n · xⁿ⁻¹",
+        exampleTitle: 'Contoh: f(x) = 3x⁴ − 5x² + 7',
+        exampleSteps: [
+          "1. Pisahkan tiap suku menggunakan Sum/Difference Rule.",
+          "2. Turunan 3x⁴ = 3 · 4x³ = 12x³.",
+          "3. Turunan −5x² = −5 · 2x¹ = −10x, dan turunan konstanta 7 = 0.",
+          "4. Jadi, f'(x) = 12x³ − 10x."
+        ],
+        videoTitle: 'Aturan Dasar Turunan (Power & Sum Rule)',
+        videoThumbText: 'ATURAN DASAR TURUNAN',
+        videoUrl: 'https://www.youtube.com/results?search_query=aturan+dasar+turunan+power+rule+matematika',
+        exercises: [
+          {
+            q: "1. Berapakah turunan dari f(x) = 5x³?",
+            options: ['A. 15x²', 'B. 5x²', 'C. 15x³'],
+            correct: 0,
+            explanation: "Dengan Power Rule: 5 · 3 · x^(3-1) = 15x²."
+          },
+          {
+            q: "2. Turunan dari f(x) = 42 adalah...",
+            options: ['A. 42', 'B. 1', 'C. 0'],
+            correct: 2,
+            explanation: "Berdasarkan Constant Rule, turunan dari konstanta apa pun selalu sama dengan 0."
+          },
+          {
+            q: "3. Jika f(x) = 2x² + 6x − 9, maka f'(x) = ...",
+            options: ['A. 4x + 6', 'B. 2x + 6', 'C. 4x − 9'],
+            correct: 0,
+            explanation: "Turunkan tiap suku: d/dx(2x²) = 4x, d/dx(6x) = 6, dan d/dx(-9) = 0. Hasilnya 4x + 6."
+          }
+        ]
+      },
+      {
+        id: 3,
+        num: '03',
+        title: 'Advanced Derivatives',
+        shortDesc: 'Product rule, quotient rule, dan chain rule.',
+        subtitle: 'Menurunkan hasil kali, hasil bagi, dan fungsi komposisi secara sistematis.',
+        badges: ['Intermediate', '25 min read', 'Text + Video + Exercises'],
+        icon: '∂',
+        objectives: 'Mampu menerapkan Product Rule, Quotient Rule, dan Chain Rule untuk menyelesaikan turunan fungsi yang lebih kompleks.',
+        topics: [
+          {
+            id: 'topic-1',
+            label: 'TOPIC 01',
+            title: 'Product Rule (Aturan Perkalian)',
+            body: 'Untuk fungsi berbentuk perkalian u(x) · v(x), turunannya BUKAN u\' · v\', melainkan u\'v + uv\'.'
+          },
+          {
+            id: 'topic-2',
+            label: 'TOPIC 02',
+            title: 'Quotient Rule (Aturan Pembagian)',
+            body: 'Untuk fungsi pecahan u(x) / v(x), turunannya adalah (u\'v − uv\') / v². Pastikan urutan pengurangan tidak terbalik.'
+          },
+          {
+            id: 'topic-3',
+            label: 'TOPIC 03',
+            title: 'Chain Rule (Aturan Rantai)',
+            body: 'Digunakan untuk fungsi bersarang f(g(x)). Turunkan fungsi luar terlebih dahulu sambil mempertahankan isi di dalamnya, lalu kalikan dengan turunan fungsi dalam: f\'(g(x)) · g\'(x).'
+          }
+        ],
+        formula: "d/dx [f(g(x))] = f'(g(x)) · g'(x)",
+        exampleTitle: 'Contoh Chain Rule: f(x) = (2x + 3)⁴',
+        exampleSteps: [
+          "1. Identifikasi fungsi luar u⁴ dan fungsi dalam u = 2x + 3.",
+          "2. Turunan fungsi luar: 4u³ = 4(2x + 3)³.",
+          "3. Turunan fungsi dalam: d/dx(2x + 3) = 2.",
+          "4. Kalikan keduanya: f'(x) = 4(2x + 3)³ · 2 = 8(2x + 3)³."
+        ],
+        videoTitle: 'Aturan Rantai, Perkalian & Pembagian Turunan',
+        videoThumbText: 'CHAIN, PRODUCT & QUOTIENT RULE',
+        videoUrl: 'https://www.youtube.com/results?search_query=aturan+rantai+chain+rule+turunan+kalkulus',
+        exercises: [
+          {
+            q: "1. Rumus Product Rule untuk (u · v)' adalah...",
+            options: ["A. u'v'", "B. u'v + uv'", "C. u'v − uv'"],
+            correct: 1,
+            explanation: "Product Rule menyatakan bahwa turunan perkalian dua fungsi adalah (u·v)' = u'v + uv'."
+          },
+          {
+            q: "2. Dengan Chain Rule, turunan dari f(x) = (3x + 1)² adalah...",
+            options: ['A. 2(3x + 1)', 'B. 6(3x + 1)', 'C. 3(3x + 1)²'],
+            correct: 1,
+            explanation: "Turunan luar 2(3x + 1) dikali turunan dalam (3) menghasilkan 6(3x + 1)."
+          },
+          {
+            q: "3. Pada Quotient Rule (u / v)', penyebut hasilnya adalah...",
+            options: ['A. v', 'B. v²', "C. 2v'"],
+            correct: 1,
+            explanation: "Quotient Rule: (u/v)' = (u'v − uv') / v², sehingga penyebutnya adalah v²."
+          }
+        ]
+      },
+      {
+        id: 4,
+        num: '04',
+        title: 'Applications of Derivatives',
+        shortDesc: 'Garis singgung, titik ekstrem, dan optimasi.',
+        subtitle: 'Menerapkan turunan untuk mencari garis singgung, nilai maksimum/minimum, dan optimasi nyata.',
+        badges: ['Intermediate', '20 min read', 'Text + Video + Exercises'],
+        icon: '↗',
+        objectives: 'Mampu menentukan persamaan garis singgung, mengidentifikasi titik stasioner (ekstrem), dan menyelesaikan masalah optimasi sederhana.',
+        topics: [
+          {
+            id: 'topic-1',
+            label: 'TOPIC 01',
+            title: 'Persamaan Garis Singgung',
+            body: 'Gradien garis singgung di titik (a, f(a)) adalah m = f\'(a). Persamaan garis singgungnya ditulis sebagai y − f(a) = m(x − a).'
+          },
+          {
+            id: 'topic-2',
+            label: 'TOPIC 02',
+            title: 'Titik Stasioner & Nilai Ekstrem',
+            body: 'Titik maksimum lokal atau minimum lokal terjadi saat gradien garis singgung mendatar, yaitu ketika f\'(x) = 0.'
+          },
+          {
+            id: 'topic-3',
+            label: 'TOPIC 03',
+            title: 'Masalah Optimasi',
+            body: 'Dalam kehidupan nyata (seperti memaksimalkan luas lahan atau keuntungan bisnis), kita membuat model fungsi lalu mencari titik kritis di mana f\'(x) = 0.'
+          }
+        ],
+        formula: "y − f(a) = f'(a)(x − a)   |   Titik Stasioner: f'(x) = 0",
+        exampleTitle: 'Contoh: Titik minimum f(x) = x² − 4x + 5',
+        exampleSteps: [
+          "1. Cari turunan pertama: f'(x) = 2x − 4.",
+          "2. Set f'(x) = 0 → 2x − 4 = 0 → x = 2.",
+          "3. Substitusi x = 2 ke fungsi: f(2) = 2² − 4(2) + 5 = 1.",
+          "4. Jadi, titik minimum berada di (2, 1)."
+        ],
+        videoTitle: 'Aplikasi Turunan: Garis Singgung & Optimasi',
+        videoThumbText: 'APLIKASI TURUNAN & OPTIMASI',
+        videoUrl: 'https://www.youtube.com/results?search_query=aplikasi+turunan+maksimum+minimum+garis+singgung',
+        exercises: [
+          {
+            q: "1. Gradien garis singgung kurva f(x) = x² di titik x = 3 adalah...",
+            options: ['A. 3', 'B. 6', 'C. 9'],
+            correct: 1,
+            explanation: "f'(x) = 2x. Maka di x = 3, gradiennya m = f'(3) = 2(3) = 6."
+          },
+          {
+            q: "2. Syarat terjadinya titik stasioner pada fungsi f(x) adalah...",
+            options: ["A. f'(x) = 0", "B. f'(x) = 1", "C. f(x) = 0"],
+            correct: 0,
+            explanation: "Titik stasioner terjadi saat garis singgung mendatar, yaitu ketika f'(x) = 0."
+          },
+          {
+            q: "3. Nilai x pembuat stasioner dari f(x) = x² − 6x + 10 adalah...",
+            options: ['A. x = 6', 'B. x = 3', 'C. x = -3'],
+            correct: 1,
+            explanation: "f'(x) = 2x − 6 = 0 → 2x = 6 → x = 3."
+          }
+        ]
+      }
+    ];
+
+    const FINAL_QUIZ_QUESTIONS = [
+      {
+        q: "1. Turunan dari f(x) = 4x³ − 2x + 9 adalah...",
+        options: ["12x² − 2", "12x² − 2x", "4x² − 2", "12x³ − 2"],
+        correct: 0,
+        explanation: "Gunakan Power Rule & Constant Rule: d/dx(4x³) = 12x², d/dx(-2x) = -2, d/dx(9) = 0."
+      },
+      {
+        q: "2. Secara geometris, nilai f'(2) = 5 berarti...",
+        options: [
+          "Nilai fungsi di x = 2 adalah 5",
+          "Gradien garis singgung kurva di x = 2 adalah 5",
+          "Luas di bawah kurva dari 0 ke 2 adalah 5",
+          "Fungsi memotong sumbu-y di 5"
+        ],
+        correct: 1,
+        explanation: "Turunan di suatu titik merepresentasikan gradien (kemiringan) garis singgung kurva di titik tersebut."
+      },
+      {
+        q: "3. Menggunakan Chain Rule, turunan dari f(x) = (5x − 2)³ adalah...",
+        options: ["3(5x − 2)²", "15(5x − 2)²", "5(5x − 2)²", "15(5x − 2)³"],
+        correct: 1,
+        explanation: "Turunan luar 3(5x − 2)² dikalikan turunan dalam (5) = 15(5x − 2)²."
+      },
+      {
+        q: "4. Jika f(x) = sin(x), berapakah nilai f'(0)?",
+        options: ["0", "1", "-1", "π"],
+        correct: 1,
+        explanation: "Turunan sin(x) adalah cos(x). Maka f'(0) = cos(0) = 1."
+      },
+      {
+        q: "5. Titik stasioner dari f(x) = x² − 8x + 12 terjadi pada...",
+        options: ["x = 2", "x = 4", "x = 8", "x = -4"],
+        correct: 1,
+        explanation: "f'(x) = 2x − 8 = 0 → 2x = 8 → x = 4."
+      }
+    ];
+
+    /* =======================================================================
+       2. APPLICATION STATE & LOCALSTORAGE PERSISTENCE
+       ======================================================================= */
+    const STORAGE_KEY = 'deriva_app_state_v1';
+
+    const DEFAULT_STATE = {
+      isAuthenticated: false,
+      user: {
+        name: 'Student Name',
+        email: 'student@email.com'
+      },
+      currentPage: 'dashboard',
+      activeModuleId: 1,
+      moduleStatus: {
+        1: 'completed',
+        2: 'in_progress',
+        3: 'up_next',
+        4: 'up_next'
+      },
+      exerciseProgress: {
+        1: {},
+        2: {},
+        3: {},
+        4: {}
+      },
+      avgQuizScore: 85,
+      chatHistory: [
+        {
+          role: 'ai',
+          text: 'Halo! Saya Deriva AI, tutor Kalkulus kamu. 👋\nAda konsep turunan yang ingin kamu pelajari hari ini?'
+        }
+      ]
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(DEFAULT_STATE);
+        const parsed = JSON.parse(raw);
+        return {
+          ...structuredClone(DEFAULT_STATE),
+          ...parsed,
+          user: { ...DEFAULT_STATE.user, ...(parsed.user || {}) },
+          moduleStatus: { ...DEFAULT_STATE.moduleStatus, ...(parsed.moduleStatus || {}) },
+          exerciseProgress: { ...DEFAULT_STATE.exerciseProgress, ...(parsed.exerciseProgress || {}) }
+        };
+      } catch (e) {
+        return structuredClone(DEFAULT_STATE);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn('Could not persist state:', e);
+      }
+    }
+
+    /* =======================================================================
+       3. UI HELPERS (TOASTS, MODALS, USER SYNC)
+       ======================================================================= */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const colors = {
+        info: 'bg-slate-900 text-white',
+        success: 'bg-emerald-600 text-white',
+        error: 'bg-rose-600 text-white'
+      };
+      toast.className = `pointer-events-auto px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg ${colors[type] || colors.info} animate-view`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 2800);
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function syncUserUI() {
+      const name = state.user.name || 'Student Name';
+      const email = state.user.email || 'student@email.com';
+      const firstWord = name.trim().split(/\s+/)[0] || 'Student';
+      const initial = name.trim().charAt(0).toUpperCase() || 'S';
+
+      document.querySelectorAll('.user-name-text').forEach(el => (el.textContent = name));
+      document.querySelectorAll('.user-email-text').forEach(el => (el.textContent = email));
+      document.querySelectorAll('.user-initial-badge').forEach(el => (el.textContent = initial));
+
+      const greetEl = document.getElementById('dashboard-greeting-name');
+      if (greetEl) greetEl.textContent = firstWord === 'Student' ? 'Student' : firstWord;
+
+      // Sync stats
+      const completedCount = Object.values(state.moduleStatus).filter(s => s === 'completed').length;
+      const pct = Math.round((completedCount / MODULES_DATA.length) * 100);
+
+      const overallEl = document.getElementById('stat-overall-progress');
+      if (overallEl) overallEl.textContent = pct + '%';
+
+      const quizEl = document.getElementById('stat-quiz-score');
+      if (quizEl) quizEl.textContent = `${state.avgQuizScore}/100`;
+
+      const profQuizEl = document.getElementById('profile-quiz-score');
+      if (profQuizEl) profQuizEl.textContent = `${state.avgQuizScore}%`;
+
+      const profLessonsEl = document.getElementById('profile-lessons-count');
+      if (profLessonsEl) profLessonsEl.textContent = completedCount;
+
+      renderDashboardContinueCard();
+    }
+
+    function renderDashboardContinueCard() {
+      const container = document.getElementById('dashboard-continue-card');
+      if (!container) return;
+
+      // Pick first in_progress module, else first up_next, else last module (all completed)
+      const targetMod =
+        MODULES_DATA.find(m => state.moduleStatus[m.id] === 'in_progress') ||
+        MODULES_DATA.find(m => state.moduleStatus[m.id] !== 'completed') ||
+        MODULES_DATA[MODULES_DATA.length - 1];
+
+      const allDone = MODULES_DATA.every(m => state.moduleStatus[m.id] === 'completed');
+      const savedEx = state.exerciseProgress[targetMod.id] || {};
+      const correctCount = Object.values(savedEx).filter(x => x && x.isCorrect).length;
+      const modPct = state.moduleStatus[targetMod.id] === 'completed'
+        ? 100
+        : Math.max(20, Math.round((correctCount / targetMod.exercises.length) * 100));
+
+      const statusBadge = allDone
+        ? 'All Modules • Completed'
+        : `Module ${targetMod.num} • ${state.moduleStatus[targetMod.id] === 'in_progress' ? 'In Progress' : 'Up Next'}`;
+
+      container.innerHTML = `
+        <div class="w-16 h-16 rounded-2xl bg-brand-500 text-white flex items-center justify-center text-3xl font-serif shrink-0 shadow-sm shadow-brand-500/30">
+          ${targetMod.icon}
+        </div>
+        <div class="flex-1 min-w-0 w-full">
+          <div class="inline-block text-[10px] font-bold tracking-wider uppercase ${allDone ? 'text-emerald-700 bg-emerald-100/80' : 'text-brand-600 bg-brand-100/80'} px-2 py-0.5 rounded-md mb-1.5">
+            ${statusBadge}
+          </div>
+          <h3 class="font-display font-bold text-base text-slate-900">${targetMod.title}</h3>
+          <p class="text-xs text-slate-500 mt-0.5 mb-3">${targetMod.shortDesc}</p>
+          <div class="w-full h-1.5 bg-slate-200/80 rounded-full overflow-hidden mb-2">
+            <div class="h-full ${allDone ? 'bg-emerald-500' : 'bg-brand-500'} rounded-full progress-fill" style="width: ${modPct}%"></div>
+          </div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-500 font-medium">${modPct}% completed</span>
+            <button onclick="${allDone ? 'openFinalQuiz()' : `openModule(${targetMod.id})`}" class="font-bold text-slate-800 hover:text-brand-600 transition">
+              ${allDone ? 'Take Final Quiz →' : 'Continue →'}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    /* =======================================================================
+       4. AUTHENTICATION FLOW
+       ======================================================================= */
+    function switchAuthMode(mode) {
+      const signinBox = document.getElementById('auth-signin-box');
+      const signupBox = document.getElementById('auth-signup-box');
+      const formula = document.getElementById('auth-hero-formula');
+      const title = document.getElementById('auth-hero-title');
+      const subtitle = document.getElementById('auth-hero-subtitle');
+
+      // Clear any stale validation errors when switching modes
+      document.getElementById('signin-error').classList.add('hidden');
+      document.getElementById('signup-error').classList.add('hidden');
+
+      if (mode === 'signup') {
+        signinBox.classList.add('hidden');
+        signupBox.classList.remove('hidden');
+        formula.innerHTML = "f'(x) = lim<sub>h→0</sub> [f(x+h)−f(x)] / h";
+        title.innerHTML = 'Make Calculus<br />finally make sense.';
+        subtitle.textContent = 'Learn derivatives through clear explanations, interactive graphs, and guided practice. Your learning journey starts here.';
+      } else {
+        signupBox.classList.add('hidden');
+        signinBox.classList.remove('hidden');
+        formula.textContent = 'dy / dx';
+        title.innerHTML = 'Welcome<br />back, learner.';
+        subtitle.textContent = 'Pick up where you left off. Every concept you master brings you one step closer to understanding Calculus.';
+      }
+    }
+
+    document.getElementById('form-signin').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('signin-email').value.trim();
+      const pass = document.getElementById('signin-password').value.trim();
+      const errBox = document.getElementById('signin-error');
+
+      if (!email || !email.includes('@')) {
+        errBox.textContent = 'Masukkan alamat email yang valid.';
+        errBox.classList.remove('hidden');
+        return;
+      }
+      if (pass.length < 4) {
+        errBox.textContent = 'Password minimal 4 karakter (atau gunakan tombol Akun Demo).';
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      errBox.classList.add('hidden');
+      state.isAuthenticated = true;
+      state.user.email = email;
+      if (state.user.name === 'Student Name') {
+        const inferred = email.split('@')[0].replace(/[._-]/g, ' ');
+        state.user.name = inferred.replace(/\b\w/g, c => c.toUpperCase());
+      }
+      saveState();
+      enterWorkspace('dashboard');
+      showToast('Selamat datang kembali di Deriva!', 'success');
+    });
+
+    document.getElementById('form-signup').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const pass = document.getElementById('signup-password').value.trim();
+      const errBox = document.getElementById('signup-error');
+
+      if (name.length < 2) {
+        errBox.textContent = 'Masukkan nama lengkap kamu.';
+        errBox.classList.remove('hidden');
+        return;
+      }
+      if (!email || !email.includes('@')) {
+        errBox.textContent = 'Masukkan alamat email yang valid.';
+        errBox.classList.remove('hidden');
+        return;
+      }
+      if (pass.length < 4) {
+        errBox.textContent = 'Password minimal 4 karakter.';
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      errBox.classList.add('hidden');
+      state.isAuthenticated = true;
+      state.user = { name, email };
+      saveState();
+      enterWorkspace('dashboard');
+      showToast(`Akun berhasil dibuat! Halo, ${name}.`, 'success');
+    });
+
+    function demoLogin() {
+      state.isAuthenticated = true;
+      saveState();
+      enterWorkspace('dashboard');
+      showToast('Masuk sebagai Akun Demo Deriva.', 'success');
+    }
+
+    function signOut() {
+      state.isAuthenticated = false;
+      saveState();
+      document.getElementById('form-signin').reset();
+      document.getElementById('form-signup').reset();
+      document.getElementById('view-workspace').classList.add('hidden');
+      document.getElementById('view-module').classList.add('hidden');
+      document.getElementById('view-auth').classList.remove('hidden');
+      switchAuthMode('signin');
+      showToast('Kamu telah keluar dari akun.');
+    }
+
+    function openForgotModal() {
+      openModal('modal-forgot');
+    }
+
+    document.getElementById('form-forgot').addEventListener('submit', (e) => {
+      e.preventDefault();
+      closeModal('modal-forgot');
+      document.getElementById('forgot-email').value = '';
+      showToast('Tautan reset password telah dikirim ke email kamu!', 'success');
+    });
+
+    /* =======================================================================
+       5. NAVIGATION & WORKSPACE ROUTING
+       ======================================================================= */
+    function enterWorkspace(page = 'dashboard') {
+      document.getElementById('view-auth').classList.add('hidden');
+      document.getElementById('view-module').classList.add('hidden');
+      document.getElementById('view-workspace').classList.remove('hidden');
+      syncUserUI();
+      navigateTo(page);
+    }
+
+    function navigateTo(page) {
+      document.getElementById('view-auth').classList.add('hidden');
+      document.getElementById('view-module').classList.add('hidden');
+      document.getElementById('view-workspace').classList.remove('hidden');
+
+      state.currentPage = page;
+      saveState();
+
+      // Hide all workspace pages
+      document.querySelectorAll('.workspace-page').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById(`page-${page}`);
+      if (target) target.classList.remove('hidden');
+
+      // Update sidebar active pill
+      document.querySelectorAll('#workspace-nav .nav-item').forEach(btn => {
+        const isActive = btn.dataset.nav === page;
+        if (isActive) {
+          btn.classList.add('bg-brand-50', 'text-brand-600');
+          btn.classList.remove('text-slate-600', 'hover:bg-slate-50', 'hover:text-slate-900');
+        } else {
+          btn.classList.remove('bg-brand-50', 'text-brand-600');
+          btn.classList.add('text-slate-600', 'hover:bg-slate-50', 'hover:text-slate-900');
+        }
+      });
+
+      // Update breadcrumb & context label
+      const titles = {
+        dashboard: 'Dashboard',
+        materials: 'Learning Materials',
+        graph: 'Interactive Graph',
+        tutor: 'AI Tutor',
+        profile: 'My Profile'
+      };
+      document.getElementById('header-breadcrumb').textContent = titles[page] || 'Dashboard';
+      const todayFormatted = new Date().toLocaleDateString('en-GB', {
+        weekday: 'long', day: 'numeric', month: 'long'
+      });
+      document.getElementById('header-context-label').textContent =
+        page === 'dashboard' ? todayFormatted : 'Learning workspace';
+
+      // Page-specific renders
+      if (page === 'dashboard') {
+        renderActivityChart();
+        renderDashboardContinueCard();
+      }
+      if (page === 'materials') renderMaterialsList();
+      if (page === 'graph') {
+        requestAnimationFrame(() => {
+          resizeGraphCanvas();
+          drawGraph();
+        });
+      }
+      if (page === 'tutor') renderChatMessages();
+
+      toggleMobileSidebar(false);
+      document.getElementById('notification-popover').classList.add('hidden');
+      window.scrollTo(0, 0);
+    }
+
+    function toggleMobileSidebar(open) {
+      const sidebar = document.getElementById('workspace-sidebar');
+      const backdrop = document.getElementById('mobile-sidebar-backdrop');
+      if (open) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    function toggleMobileCourseSidebar(open) {
+      const sidebar = document.getElementById('course-sidebar');
+      const backdrop = document.getElementById('mobile-course-backdrop');
+      if (open) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    function toggleNotificationPopover() {
+      document.getElementById('notification-popover').classList.toggle('hidden');
+    }
+
+    /* =======================================================================
+       6. DASHBOARD ACTIVITY CHART & DAILY INSIGHTS
+       ======================================================================= */
+    const DAILY_INSIGHTS = [
+      "A derivative tells us how quickly a function changes at a particular point. It's the foundation of understanding motion, growth, and optimization.",
+      "Whenever a smooth curve reaches a peak (local maximum) or valley (local minimum), its tangent line is perfectly horizontal — meaning f'(x) = 0.",
+      "The Power Rule d/dx(xⁿ) = n·xⁿ⁻¹ works not only for positive integers, but also for negative and fractional exponents like √x = x^(1/2).",
+      "Think of the Chain Rule like peeling an onion: differentiate the outer layer first while keeping the inside intact, then multiply by the derivative of the inside."
+    ];
+    let currentInsightIndex = 0;
+
+    function nextDailyInsight() {
+      currentInsightIndex = (currentInsightIndex + 1) % DAILY_INSIGHTS.length;
+      const textEl = document.getElementById('daily-insight-text');
+      const countEl = document.getElementById('insight-counter');
+      if (textEl) textEl.textContent = DAILY_INSIGHTS[currentInsightIndex];
+      if (countEl) countEl.textContent = `${currentInsightIndex + 1} / ${DAILY_INSIGHTS.length}`;
+    }
+
+    function renderActivityChart() {
+      const data = [
+        { day: 'Monday', mins: 35, pct: 35, active: false },
+        { day: 'Tuesday', mins: 60, pct: 64, active: false },
+        { day: 'Wednesday', mins: 45, pct: 48, active: false },
+        { day: 'Thursday', mins: 95, pct: 92, active: true },
+        { day: 'Friday', mins: 55, pct: 58, active: false },
+        { day: 'Saturday', mins: 25, pct: 28, active: false },
+        { day: 'Sunday', mins: 18, pct: 18, active: false }
+      ];
+
+      const container = document.getElementById('activity-chart');
+      container.innerHTML = data.map(item => `
+        <div class="group relative flex-1 h-full flex items-end justify-center">
+          <div class="opacity-0 group-hover:opacity-100 pointer-events-none transition absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-semibold px-2 py-0.5 rounded-md whitespace-nowrap shadow">
+            ${item.day}: ${item.mins}m
+          </div>
+          <div class="w-4 sm:w-5 rounded-t-md transition-all duration-300 ${
+            item.active
+              ? 'bg-brand-500 shadow-sm shadow-brand-500/30'
+              : item.pct > 45
+                ? 'bg-brand-300/75 group-hover:bg-brand-400'
+                : 'bg-brand-100 group-hover:bg-brand-200'
+          }" style="height: ${item.pct}%"></div>
+        </div>
+      `).join('');
+    }
+
+    /* =======================================================================
+       7. LEARNING MATERIALS VIEW
+       ======================================================================= */
+    function renderMaterialsList() {
+      const completedCount = Object.values(state.moduleStatus).filter(s => s === 'completed').length;
+      const pct = Math.round((completedCount / MODULES_DATA.length) * 100);
+
+      document.getElementById('materials-progress-pct').textContent = `${pct}%`;
+      document.getElementById('materials-progress-bar').style.width = `${pct}%`;
+      document.getElementById('materials-completed-text').textContent = `${completedCount} of ${MODULES_DATA.length} modules completed`;
+
+      const listEl = document.getElementById('materials-module-list');
+      listEl.innerHTML = MODULES_DATA.map(mod => {
+        const status = state.moduleStatus[mod.id] || 'up_next';
+        let badgeHtml = '';
+        if (status === 'completed') {
+          badgeHtml = `<span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold tracking-wider uppercase shrink-0">Completed</span>`;
+        } else if (status === 'in_progress') {
+          badgeHtml = `<span class="px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-[10px] font-bold tracking-wider uppercase shrink-0">In Progress</span>`;
+        } else {
+          badgeHtml = `<span class="px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold tracking-wider uppercase shrink-0">Up Next</span>`;
+        }
+
+        return `
+          <button onclick="openModule(${mod.id})"
+            class="w-full text-left bg-white hover:border-brand-300 hover:shadow-soft rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-card flex items-center justify-between gap-4 transition group">
+            <div class="flex items-center gap-4 min-w-0">
+              <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-500 font-bold text-lg flex items-center justify-center shrink-0 group-hover:bg-brand-500 group-hover:text-white transition">
+                ${mod.icon}
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-slate-400">${mod.num}</span>
+                  <h3 class="font-display font-bold text-sm sm:text-[15px] text-slate-900 group-hover:text-brand-600 transition truncate">${mod.title}</h3>
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5 truncate">${mod.shortDesc}</p>
+              </div>
+            </div>
+            ${badgeHtml}
+          </button>
+        `;
+      }).join('');
+    }
+
+    /* =======================================================================
+       8. MODULE DETAIL VIEW (COURSE READER)
+       ======================================================================= */
+    function openModule(moduleId) {
+      const mod = MODULES_DATA.find(m => m.id === moduleId) || MODULES_DATA[0];
+      state.activeModuleId = mod.id;
+      if (state.moduleStatus[mod.id] === 'up_next') {
+        state.moduleStatus[mod.id] = 'in_progress';
+      }
+      saveState();
+
+      document.getElementById('view-auth').classList.add('hidden');
+      document.getElementById('view-workspace').classList.add('hidden');
+      document.getElementById('view-module').classList.remove('hidden');
+
+      document.getElementById('module-breadcrumb-title').textContent = mod.title;
+
+      // Render left course sidebar
+      const sidebarList = document.getElementById('course-sidebar-list');
+      sidebarList.innerHTML = MODULES_DATA.map(m => {
+        const active = m.id === mod.id;
+        return `
+          <button onclick="openModule(${m.id})"
+            class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition ${
+              active
+                ? 'bg-brand-50 text-brand-600'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+            }">
+            <span class="text-[11px] font-bold ${active ? 'text-brand-500' : 'text-slate-400'}">${m.num}</span>
+            <span class="truncate">${m.title}</span>
+          </button>
+        `;
+      }).join('');
+
+      // Render right sticky TOC
+      const tocList = document.getElementById('module-toc-list');
+      tocList.innerHTML = `
+        ${mod.topics.map((t, idx) => `
+          <li><a href="#mod-${t.id}" class="hover:text-brand-600 transition block py-0.5">0${idx + 1} ${t.title}</a></li>
+        `).join('')}
+        <li><a href="#mod-video" class="hover:text-brand-600 transition block py-0.5">▶ Video lesson</a></li>
+        <li><a href="#mod-exercises" class="hover:text-brand-600 transition block py-0.5">✎ Practice exercises</a></li>
+      `;
+
+      // Render main article content
+      const nextMod = MODULES_DATA.find(m => m.id === mod.id + 1);
+      const savedEx = state.exerciseProgress[mod.id] || {};
+
+      const articleEl = document.getElementById('module-article-container');
+      articleEl.innerHTML = `
+        <!-- Header -->
+        <div class="pb-1">
+          <div class="text-[11px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">
+            Module ${mod.num} • Learning Material
+          </div>
+          <h1 class="font-display text-2xl sm:text-[30px] font-bold text-slate-900 tracking-tight">${mod.title}</h1>
+          <p class="text-sm text-slate-500 mt-1.5">${mod.subtitle}</p>
+          <div class="flex flex-wrap items-center gap-2 mt-4">
+            <span class="px-2.5 py-1 rounded-full bg-brand-50 text-brand-600 text-[11px] font-semibold">${mod.badges[0]}</span>
+            <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600 text-[11px] font-medium">${mod.badges[1]}</span>
+            <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600 text-[11px] font-medium">${mod.badges[2]}</span>
+          </div>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card">
+          <div class="text-[10px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">Learning Objectives</div>
+          <h2 class="font-display font-bold text-base text-slate-900 mb-2">What you'll learn</h2>
+          <p class="text-sm text-slate-600 leading-relaxed">${mod.objectives}</p>
+        </div>
+
+        <!-- Topics 01 - 03 -->
+        ${mod.topics.map(t => `
+          <div id="mod-${t.id}" class="scroll-mt-24 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card">
+            <div class="text-[10px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">${t.label}</div>
+            <h2 class="font-display font-bold text-base text-slate-900 mb-2">${t.title}</h2>
+            <p class="text-sm text-slate-600 leading-relaxed">${t.body}</p>
+          </div>
+        `).join('')}
+
+        <!-- Key Formula -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card">
+          <div class="text-[10px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">Key Formula</div>
+          <h2 class="font-display font-bold text-base text-slate-900 mb-4">Important formula</h2>
+          <div class="rounded-xl bg-[#eff5ff] border border-brand-100 py-5 px-4 text-center font-mono text-sm sm:text-base font-bold text-brand-600 overflow-x-auto">
+            ${mod.formula}
+          </div>
+        </div>
+
+        <!-- Worked Example -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card">
+          <div class="text-[10px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">Worked Example</div>
+          <h2 class="font-display font-bold text-base text-slate-900 mb-3">${mod.exampleTitle}</h2>
+          <div class="rounded-xl bg-slate-50 border border-slate-200/70 p-4 space-y-2 font-mono text-xs sm:text-[13px] text-slate-700">
+            ${mod.exampleSteps.map(step => `<div>${step}</div>`).join('')}
+          </div>
+        </div>
+
+        <!-- Video Lesson -->
+        <div id="mod-video" class="scroll-mt-24 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card">
+          <div class="text-[10px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">Video Lesson</div>
+          <h2 class="font-display font-bold text-base text-slate-900 mb-1">Watch and learn</h2>
+          <p class="text-xs text-slate-500 mb-4">${mod.videoTitle}</p>
+
+          <a href="${mod.videoUrl}" target="_blank" rel="noopener noreferrer"
+            class="group relative block rounded-2xl overflow-hidden bg-navy-gradient aspect-video flex flex-col items-center justify-center text-center p-6 border border-slate-800 shadow-md">
+            <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#60a5fa 1px, transparent 1px); background-size: 20px 20px;"></div>
+            <div class="relative z-10 text-xs font-bold tracking-widest uppercase text-cyan-300 mb-2">Belajar Matematika SMA</div>
+            <div class="relative z-10 w-16 h-11 rounded-2xl bg-red-600 group-hover:bg-red-500 group-hover:scale-105 transition flex items-center justify-center shadow-lg mb-4">
+              <svg class="w-6 h-6 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <div class="relative z-10 font-display font-extrabold text-lg sm:text-2xl text-white tracking-wide">${mod.videoThumbText}</div>
+          </a>
+
+          <div class="mt-3 text-[11px] text-slate-400">
+            Video bersifat eksternal. Jika pemutar tidak tersedia, buka langsung di YouTube.
+          </div>
+          <a href="${mod.videoUrl}" target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 text-xs font-semibold text-brand-500 hover:text-brand-600 mt-1">
+            <span>Open video on YouTube ↗</span>
+          </a>
+        </div>
+
+        <!-- Practice Exercises -->
+        <div id="mod-exercises" class="scroll-mt-24 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card space-y-5">
+          <div>
+            <div class="text-[10px] font-bold tracking-[0.12em] uppercase text-brand-500 mb-1">Knowledge Check</div>
+            <h2 class="font-display font-bold text-base text-slate-900">Practice exercises</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Pilih jawaban yang paling tepat, lalu tekan Check answer untuk melihat hasilnya.</p>
+          </div>
+
+          <div class="space-y-4">
+            ${mod.exercises.map((ex, idx) => {
+              const prev = savedEx[idx];
+              return `
+                <div class="rounded-2xl border border-slate-200/80 p-4 sm:p-5 space-y-3" id="ex-card-${idx}">
+                  <div class="font-semibold text-sm text-slate-900">${ex.q}</div>
+                  <div class="space-y-2">
+                    ${ex.options.map((opt, optIdx) => `
+                      <label class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl border border-slate-200/90 hover:border-brand-300 hover:bg-slate-50 cursor-pointer text-xs sm:text-sm text-slate-700 transition">
+                        <input type="radio" name="ex-${mod.id}-${idx}" value="${optIdx}" ${prev && prev.selected === optIdx ? 'checked' : ''} class="accent-brand-500 w-4 h-4" />
+                        <span>${opt}</span>
+                      </label>
+                    `).join('')}
+                  </div>
+                  <div class="pt-1 flex items-center gap-3">
+                    <button type="button" onclick="checkModuleExercise(${mod.id}, ${idx})"
+                      class="px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-sm transition">
+                      Check answer
+                    </button>
+                  </div>
+                  <div id="ex-feedback-${idx}" class="${prev ? '' : 'hidden'} text-xs rounded-xl p-3.5 leading-relaxed ${
+                    prev ? (prev.isCorrect ? 'bg-emerald-50 border border-emerald-200 text-emerald-800' : 'bg-rose-50 border border-rose-200 text-rose-800') : ''
+                  }">
+                    ${prev ? `<strong>${prev.isCorrect ? '✓ Benar!' : '✕ Kurang tepat.'}</strong> ${ex.explanation}` : ''}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Live Practice Progress -->
+          <div class="rounded-2xl bg-[#eff5ff] border border-brand-100 p-4">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-800 mb-2">
+              <span>Your practice progress</span>
+              <span id="mod-practice-count" class="text-brand-600">0 / ${mod.exercises.length} benar</span>
+            </div>
+            <div class="w-full h-2 bg-white rounded-full overflow-hidden">
+              <div id="mod-practice-bar" class="h-full bg-brand-500 rounded-full progress-fill" style="width: 0%"></div>
+            </div>
+            <div id="mod-practice-hint" class="text-[11px] text-slate-500 mt-1.5">
+              Selesaikan semua latihan untuk menandai modul ini selesai.
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 pb-8">
+          <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+            class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 shadow-card transition">
+            ↑ Back to top
+          </button>
+          <div class="flex items-center gap-2.5">
+            <button id="btn-mark-completed" onclick="toggleModuleCompleted(${mod.id})"
+              class="px-4 py-2.5 rounded-xl border text-xs font-semibold shadow-card transition ${
+                state.moduleStatus[mod.id] === 'completed'
+                  ? 'bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700'
+              }">
+              ${state.moduleStatus[mod.id] === 'completed' ? '✓ Completed' : 'Mark as Completed'}
+            </button>
+            ${nextMod ? `
+              <button onclick="openModule(${nextMod.id})"
+                class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-sm transition">
+                Next lesson →
+              </button>
+            ` : `
+              <button onclick="openFinalQuiz()"
+                class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-sm transition">
+                Take Final Quiz →
+              </button>
+            `}
+          </div>
+        </div>
+      `;
+
+      updateModulePracticeBar(mod.id);
+      toggleMobileCourseSidebar(false);
+      window.scrollTo(0, 0);
+    }
+
+    function checkModuleExercise(moduleId, exIdx) {
+      const mod = MODULES_DATA.find(m => m.id === moduleId);
+      if (!mod) return;
+      const ex = mod.exercises[exIdx];
+      const chosen = document.querySelector(`input[name="ex-${moduleId}-${exIdx}"]:checked`);
+
+      if (!chosen) {
+        showToast('Pilih salah satu jawaban terlebih dahulu.', 'error');
+        return;
+      }
+
+      const selected = parseInt(chosen.value, 10);
+      const isCorrect = selected === ex.correct;
+
+      if (!state.exerciseProgress[moduleId]) {
+        state.exerciseProgress[moduleId] = {};
+      }
+      state.exerciseProgress[moduleId][exIdx] = { selected, isCorrect };
+      saveState();
+
+      const fb = document.getElementById(`ex-feedback-${exIdx}`);
+      if (fb) {
+        fb.classList.remove(
+          'hidden',
+          'bg-emerald-50', 'border', 'border-emerald-200', 'text-emerald-800',
+          'bg-rose-50', 'border-rose-200', 'text-rose-800'
+        );
+        if (isCorrect) {
+          fb.classList.add('bg-emerald-50', 'border', 'border-emerald-200', 'text-emerald-800');
+          fb.innerHTML = `<strong>✓ Benar!</strong> ${ex.explanation}`;
+        } else {
+          fb.classList.add('bg-rose-50', 'border', 'border-rose-200', 'text-rose-800');
+          fb.innerHTML = `<strong>✕ Kurang tepat.</strong> ${ex.explanation}`;
+        }
+      }
+
+      updateModulePracticeBar(moduleId, true);
+    }
+
+    function updateModulePracticeBar(moduleId, triggerToast = false) {
+      const mod = MODULES_DATA.find(m => m.id === moduleId);
+      if (!mod) return;
+
+      const saved = state.exerciseProgress[moduleId] || {};
+      const total = mod.exercises.length;
+      const correctCount = Object.values(saved).filter(item => item && item.isCorrect).length;
+      const pct = Math.round((correctCount / total) * 100);
+
+      const countEl = document.getElementById('mod-practice-count');
+      const barEl = document.getElementById('mod-practice-bar');
+      const hintEl = document.getElementById('mod-practice-hint');
+
+      if (countEl) countEl.textContent = `${correctCount} / ${total} benar`;
+      if (barEl) barEl.style.width = `${pct}%`;
+
+      if (correctCount === total) {
+        const wasCompleted = state.moduleStatus[moduleId] === 'completed';
+        state.moduleStatus[moduleId] = 'completed';
+        saveState();
+        syncUserUI();
+
+        if (hintEl) {
+          hintEl.textContent = '🎉 Hebat! Semua latihan benar — modul ini otomatis ditandai selesai.';
+        }
+
+        const btn = document.getElementById('btn-mark-completed');
+        if (btn) {
+          btn.textContent = '✓ Completed';
+          btn.className = 'px-4 py-2.5 rounded-xl border text-xs font-semibold shadow-card transition bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100';
+        }
+
+        if (triggerToast && !wasCompleted) {
+          showToast(`Selamat! Modul ${mod.num} selesai dikerjakan.`, 'success');
+        }
+      } else if (hintEl) {
+        hintEl.textContent = 'Selesaikan semua latihan dengan benar untuk menandai modul ini selesai.';
+      }
+    }
+
+    function toggleModuleCompleted(moduleId) {
+      const isDone = state.moduleStatus[moduleId] === 'completed';
+      state.moduleStatus[moduleId] = isDone ? 'in_progress' : 'completed';
+      saveState();
+      syncUserUI();
+
+      const btn = document.getElementById('btn-mark-completed');
+      if (btn) {
+        if (state.moduleStatus[moduleId] === 'completed') {
+          btn.textContent = '✓ Completed';
+          btn.className = 'px-4 py-2.5 rounded-xl border text-xs font-semibold shadow-card transition bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100';
+          showToast('Modul ditandai selesai!', 'success');
+        } else {
+          btn.textContent = 'Mark as Completed';
+          btn.className = 'px-4 py-2.5 rounded-xl border text-xs font-semibold shadow-card transition bg-white border-slate-200 text-slate-700 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700';
+          showToast('Status modul dikembalikan ke In Progress.');
+        }
+      }
+    }
+
+    /* =======================================================================
+       9. FINAL QUIZ MODAL (5 QUESTIONS)
+       ======================================================================= */
+    let finalQuizSubmitted = false;
+
+    function openFinalQuiz() {
+      finalQuizSubmitted = false;
+      const body = document.getElementById('final-quiz-body');
+      body.innerHTML = `
+        <div class="space-y-4">
+          ${FINAL_QUIZ_QUESTIONS.map((item, idx) => `
+            <div class="rounded-2xl border border-slate-200 p-4 space-y-2.5">
+              <div class="font-semibold text-sm text-slate-900">${item.q}</div>
+              <div class="space-y-1.5">
+                ${item.options.map((opt, optIdx) => `
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200/80 hover:bg-slate-50 cursor-pointer text-xs text-slate-700">
+                    <input type="radio" name="fq-${idx}" value="${optIdx}" class="accent-brand-500" />
+                    <span>${opt}</span>
+                  </label>
+                `).join('')}
+              </div>
+              <div id="fq-fb-${idx}" class="hidden text-xs rounded-xl p-3"></div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div id="fq-summary" class="hidden rounded-2xl bg-brand-50 border border-brand-200 p-4 text-center"></div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="closeModal('modal-final-quiz')" class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50">Tutup</button>
+          <button id="fq-retake-btn" onclick="openFinalQuiz()" class="hidden px-4 py-2.5 rounded-xl border border-brand-200 bg-brand-50 hover:bg-brand-100 text-brand-600 text-xs font-semibold transition">Coba Lagi</button>
+          <button id="fq-submit-btn" onclick="submitFinalQuiz()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-sm">Submit Quiz</button>
+        </div>
+      `;
+      openModal('modal-final-quiz');
+    }
+
+    function submitFinalQuiz() {
+      if (finalQuizSubmitted) return;
+
+      // Ensure all questions have been answered
+      const unanswered = FINAL_QUIZ_QUESTIONS.some((_, idx) => !document.querySelector(`input[name="fq-${idx}"]:checked`));
+      if (unanswered) {
+        showToast('Jawab semua pertanyaan terlebih dahulu sebelum submit.', 'error');
+        return;
+      }
+
+      finalQuizSubmitted = true;
+      let score = 0;
+      FINAL_QUIZ_QUESTIONS.forEach((item, idx) => {
+        const chosen = document.querySelector(`input[name="fq-${idx}"]:checked`);
+        const fb = document.getElementById(`fq-fb-${idx}`);
+        const isCorrect = chosen && parseInt(chosen.value, 10) === item.correct;
+        if (isCorrect) score++;
+
+        // Lock radio inputs after submission
+        document.querySelectorAll(`input[name="fq-${idx}"]`).forEach(el => (el.disabled = true));
+
+        fb.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'bg-rose-50', 'text-rose-800');
+        if (isCorrect) {
+          fb.classList.add('bg-emerald-50', 'text-emerald-800');
+          fb.innerHTML = `<strong>✓ Benar!</strong> ${item.explanation}`;
+        } else {
+          fb.classList.add('bg-rose-50', 'text-rose-800');
+          fb.innerHTML = `<strong>✕ Kurang tepat.</strong> Jawaban benar: <em>${item.options[item.correct]}</em>. ${item.explanation}`;
+        }
+      });
+
+      const pct = Math.round((score / FINAL_QUIZ_QUESTIONS.length) * 100);
+      state.avgQuizScore = Math.round((state.avgQuizScore + pct) / 2);
+      saveState();
+      syncUserUI();
+
+      const submitBtn = document.getElementById('fq-submit-btn');
+      const retakeBtn = document.getElementById('fq-retake-btn');
+      if (submitBtn) submitBtn.classList.add('hidden');
+      if (retakeBtn) retakeBtn.classList.remove('hidden');
+
+      const sum = document.getElementById('fq-summary');
+      sum.classList.remove('hidden');
+      sum.innerHTML = `
+        <div class="font-display font-extrabold text-xl text-brand-600">Skor Akhir: ${pct}/100 (${score}/${FINAL_QUIZ_QUESTIONS.length} Benar)</div>
+        <div class="text-xs text-slate-600 mt-1">${pct >= 80 ? 'Luar biasa! Pemahaman turunan kamu sudah sangat kuat.' : 'Bagus! Tinjau kembali pembahasan di atas untuk memperkuat konsep.'}</div>
+      `;
+      sum.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    /* =======================================================================
+       10. INTERACTIVE GRAPH LAB (HIGH-DPI HTML5 CANVAS + DRAG INTERACTION)
+       ======================================================================= */
+    const GRAPH_FUNCTIONS = {
+      x2: {
+        label: 'f(x) = x²',
+        f: x => x * x,
+        df: x => 2 * x
+      },
+      x3: {
+        label: 'f(x) = x³',
+        f: x => 0.35 * x * x * x, // scaled smoothly for clear viewport
+        df: x => 1.05 * x * x,
+        rawF: x => x * x * x,
+        rawDf: x => 3 * x * x
+      },
+      sin: {
+        label: 'f(x) = sin(x)',
+        f: x => Math.sin(x),
+        df: x => Math.cos(x)
+      },
+      poly: {
+        label: 'f(x) = 0.5x² − x',
+        f: x => 0.5 * x * x - x,
+        df: x => x - 1
+      }
+    };
+
+    let graphState = {
+      fnKey: 'x2',
+      xVal: 1.0,
+      isDragging: false,
+      xRange: 5, // -5 to 5
+      yRange: 3.6 // -3.6 to 3.6
+    };
+
+    const canvas = document.getElementById('calculus-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeGraphCanvas() {
+      const wrapper = document.getElementById('graph-canvas-wrapper');
+      if (!wrapper) return;
+      const rect = wrapper.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function mathToCanvas(x, y, w, h) {
+      const cx = w / 2 + (x / graphState.xRange) * (w / 2);
+      const cy = h / 2 - (y / graphState.yRange) * (h / 2);
+      return [cx, cy];
+    }
+
+    function canvasToMathX(clientX) {
+      const rect = canvas.getBoundingClientRect();
+      const px = clientX - rect.left;
+      const mathX = ((px - rect.width / 2) / (rect.width / 2)) * graphState.xRange;
+      return Math.max(-3.0, Math.min(3.0, Math.round(mathX * 10) / 10));
+    }
+
+    function drawGraph() {
+      const rect = canvas.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      if (w === 0 || h === 0) return;
+
+      const fnObj = GRAPH_FUNCTIONS[graphState.fnKey];
+      const fPlot = fnObj.f;
+      const dfPlot = fnObj.df;
+
+      // Clear background
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw Grid
+      ctx.strokeStyle = '#eef2f7';
+      ctx.lineWidth = 1;
+      for (let gx = -5; gx <= 5; gx += 0.5) {
+        const [px] = mathToCanvas(gx, 0, w, h);
+        ctx.beginPath();
+        ctx.moveTo(px, 0);
+        ctx.lineTo(px, h);
+        ctx.stroke();
+      }
+      for (let gy = -4; gy <= 4; gy += 0.5) {
+        const [, py] = mathToCanvas(0, gy, w, h);
+        ctx.beginPath();
+        ctx.moveTo(0, py);
+        ctx.lineTo(w, py);
+        ctx.stroke();
+      }
+
+      // Draw Axes
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1.5;
+      const [originX, originY] = mathToCanvas(0, 0, w, h);
+      ctx.beginPath();
+      ctx.moveTo(0, originY);
+      ctx.lineTo(w, originY);
+      ctx.moveTo(originX, 0);
+      ctx.lineTo(originX, h);
+      ctx.stroke();
+
+      // Draw Axis Tick Labels
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '10px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      for (let tx = -4; tx <= 4; tx++) {
+        if (tx === 0) continue;
+        const [px] = mathToCanvas(tx, 0, w, h);
+        ctx.fillText(String(tx), px, originY + 5);
+      }
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      for (let ty = -3; ty <= 3; ty++) {
+        if (ty === 0) continue;
+        const [, py] = mathToCanvas(0, ty, w, h);
+        ctx.fillText(String(ty), originX - 6, py);
+      }
+
+      // Helper to plot curve
+      const plotCurve = (fn, color, lineWidth = 2.2) => {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+        ctx.beginPath();
+        let started = false;
+        const step = (graphState.xRange * 2) / 300;
+        for (let x = -graphState.xRange; x <= graphState.xRange; x += step) {
+          const y = fn(x);
+          const [px, py] = mathToCanvas(x, y, w, h);
+          if (!started) {
+            ctx.moveTo(px, py);
+            started = true;
+          } else {
+            ctx.lineTo(px, py);
+          }
+        }
+        ctx.stroke();
+      };
+
+      // 1. Original Function f(x) (Blue)
+      plotCurve(fPlot, '#3b6cf5', 2.4);
+
+      // 2. Derivative f'(x) (Purple)
+      plotCurve(dfPlot, '#8b5cf6', 2.0);
+
+      // 3. Tangent Line at x0 (Emerald Green)
+      const x0 = graphState.xVal;
+      const y0 = fPlot(x0);
+      const slopePlot = dfPlot(x0);
+
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      const xStart = -graphState.xRange;
+      const xEnd = graphState.xRange;
+      const [tx1, ty1] = mathToCanvas(xStart, y0 + slopePlot * (xStart - x0), w, h);
+      const [tx2, ty2] = mathToCanvas(xEnd, y0 + slopePlot * (xEnd - x0), w, h);
+      ctx.moveTo(tx1, ty1);
+      ctx.lineTo(tx2, ty2);
+      ctx.stroke();
+
+      // 4. Draggable Point Marker
+      const [ptX, ptY] = mathToCanvas(x0, y0, w, h);
+      ctx.beginPath();
+      ctx.arc(ptX, ptY, 7, 0, Math.PI * 2);
+      ctx.fillStyle = '#10b981';
+      ctx.fill();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      // Update Live Readouts (use exact mathematical values)
+      const exactF = (fnObj.rawF || fnObj.f)(x0);
+      const exactDf = (fnObj.rawDf || fnObj.df)(x0);
+
+      document.getElementById('graph-x-label').textContent = x0.toFixed(1);
+      document.getElementById('graph-x-slider').value = x0;
+      document.getElementById('readout-fx').textContent = exactF.toFixed(2);
+      document.getElementById('readout-dfx').textContent = exactDf.toFixed(2);
+      document.getElementById('readout-slope').textContent = exactDf.toFixed(2);
+    }
+
+    function resetGraphView() {
+      graphState.fnKey = 'x2';
+      graphState.xVal = 1.0;
+      document.getElementById('graph-fn-select').value = 'x2';
+      drawGraph();
+    }
+
+    document.getElementById('graph-fn-select').addEventListener('change', (e) => {
+      graphState.fnKey = e.target.value;
+      drawGraph();
+    });
+
+    document.getElementById('graph-x-slider').addEventListener('input', (e) => {
+      graphState.xVal = parseFloat(e.target.value);
+      drawGraph();
+    });
+
+    // Mouse & Touch Drag on Canvas
+    canvas.addEventListener('pointerdown', (e) => {
+      graphState.isDragging = true;
+      canvas.setPointerCapture(e.pointerId);
+      graphState.xVal = canvasToMathX(e.clientX);
+      drawGraph();
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      if (!graphState.isDragging) return;
+      graphState.xVal = canvasToMathX(e.clientX);
+      drawGraph();
+    });
+    canvas.addEventListener('pointerup', () => {
+      graphState.isDragging = false;
+    });
+    canvas.addEventListener('pointercancel', () => {
+      graphState.isDragging = false;
+    });
+
+    /* =======================================================================
+       11. AI TUTOR (POWERED BY GEMINI LLM API - MULTI-TURN + MARKDOWN)
+       ======================================================================= */
+    const GEMINI_SYSTEM_PROMPT = `Kamu adalah Deriva AI, asisten tutor Kalkulus (khususnya materi Turunan / Derivatives) yang ramah, sabar, dan jelas untuk pelajar SMA dan mahasiswa tingkat awal.
+Aturan menjawab:
+1. Gunakan Bahasa Indonesia yang natural dan ramah secara default (kecuali pengguna bertanya dalam Bahasa Inggris).
+2. Jelaskan konsep dan perhitungan matematika secara terstruktur dan langkah demi langkah (step-by-step).
+3. Gunakan notasi matematika teks yang bersih dan mudah dibaca (seperti f'(x), x², x³, lim h→0, d/dx, ·, −) tanpa sintaks LaTeX mentah yang rumit (hindari \\frac atau $$).
+4. Gunakan poin-poin bernomor atau bullet serta teks tebal (**...**) untuk menyorot rumus penting dan hasil akhir.
+5. Di akhir jawaban, berikan satu tips belajar singkat atau tawaran latihan lanjutan agar siswa semakin paham.`;
+
+    let isTutorLoading = false;
+    let lastFailedPrompt = null;
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    }
+
+    // Safe lightweight Markdown formatter for AI chat bubbles
+    function formatTutorMarkdown(rawText) {
+      const escaped = escapeHtml(rawText);
+      const lines = escaped.split('\n');
+      let html = '';
+      let inUl = false;
+      let inOl = false;
+
+      const formatInline = (line) => {
+        return line
+          .replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-200/80 text-brand-700 font-mono text-[11px]">$1</code>')
+          .replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
+          .replace(/\*([^*]+)\*/g, '<em class="italic">$1</em>');
+      };
+
+      const closeLists = () => {
+        if (inUl) { html += '</ul>'; inUl = false; }
+        if (inOl) { html += '</ol>'; inOl = false; }
+      };
+
+      for (const rawLine of lines) {
+        const trimmed = rawLine.trim();
+        if (!trimmed) {
+          closeLists();
+          html += '<div class="h-2"></div>';
+          continue;
+        }
+
+        const ulMatch = trimmed.match(/^[-•*]\s+(.+)$/);
+        const olMatch = trimmed.match(/^\d+\.\s+(.+)$/);
+
+        if (ulMatch) {
+          if (inOl) { html += '</ol>'; inOl = false; }
+          if (!inUl) { html += '<ul class="list-disc pl-5 space-y-1 my-1">'; inUl = true; }
+          html += `<li>${formatInline(ulMatch[1])}</li>`;
+        } else if (olMatch) {
+          if (inUl) { html += '</ul>'; inUl = false; }
+          if (!inOl) { html += '<ol class="list-decimal pl-5 space-y-1 my-1">'; inOl = true; }
+          html += `<li>${formatInline(olMatch[1])}</li>`;
+        } else {
+          closeLists();
+          html += `<p class="leading-relaxed">${formatInline(trimmed)}</p>`;
+        }
+      }
+      closeLists();
+      return html;
+    }
+
+    function renderChatMessages() {
+      const box = document.getElementById('tutor-messages');
+      let html = state.chatHistory.map(msg => {
+        if (msg.role === 'user') {
+          return `
+            <div class="flex justify-end">
+              <div class="max-w-[82%] rounded-2xl rounded-tr-sm bg-brand-500 text-white px-4 py-3 text-xs sm:text-[13px] leading-relaxed shadow-sm whitespace-pre-line">
+                ${escapeHtml(msg.text)}
+              </div>
+            </div>
+          `;
+        }
+        if (msg.isError) {
+          return `
+            <div class="flex justify-start">
+              <div class="max-w-[86%] rounded-2xl rounded-tl-sm bg-rose-50 text-rose-800 px-4 py-3 text-xs sm:text-[13px] leading-relaxed border border-rose-200 space-y-2">
+                <div>${escapeHtml(msg.text)}</div>
+                <button onclick="retryLastPrompt()" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-semibold transition">
+                  ↻ Coba lagi
+                </button>
+              </div>
+            </div>
+          `;
+        }
+        return `
+          <div class="flex justify-start">
+            <div class="max-w-[88%] rounded-2xl rounded-tl-sm bg-slate-100/90 text-slate-800 px-4 py-3 text-xs sm:text-[13px] border border-slate-200/60 space-y-1">
+              ${formatTutorMarkdown(msg.text)}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Animated typing indicator while awaiting Gemini response
+      if (isTutorLoading) {
+        html += `
+          <div class="flex justify-start">
+            <div class="rounded-2xl rounded-tl-sm bg-slate-100/90 border border-slate-200/60 px-4 py-3 flex items-center gap-2">
+              <span class="text-[11px] font-medium text-slate-500">Deriva AI sedang mengetik</span>
+              <span class="flex items-center gap-1">
+                <span class="typing-dot w-1.5 h-1.5 rounded-full bg-brand-500"></span>
+                <span class="typing-dot w-1.5 h-1.5 rounded-full bg-brand-500"></span>
+                <span class="typing-dot w-1.5 h-1.5 rounded-full bg-brand-500"></span>
+              </span>
+            </div>
+          </div>
+        `;
+      }
+
+      box.innerHTML = html;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function setTutorInputDisabled(disabled) {
+      const input = document.getElementById('tutor-input');
+      const btn = document.getElementById('tutor-send-btn');
+      if (input) input.disabled = disabled;
+      if (btn) btn.disabled = disabled;
+    }
+
+    async function callGeminiTutor(history) {
+      const apiKey = ""; // Canvas runtime automatically injects API key when empty
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      // Build valid multi-turn contents: must start with 'user' role and alternate roles cleanly
+      const validMessages = history.filter(m => !m.isError);
+      const firstUserIdx = validMessages.findIndex(m => m.role === 'user');
+      const sliced = firstUserIdx >= 0 ? validMessages.slice(firstUserIdx) : [];
+
+      const contents = [];
+      for (const m of sliced) {
+        const role = m.role === 'user' ? 'user' : 'model';
+        if (contents.length > 0 && contents[contents.length - 1].role === role) {
+          contents[contents.length - 1].parts.push({ text: m.text });
+        } else {
+          contents.push({ role, parts: [{ text: m.text }] });
+        }
+      }
+
+      const payload = {
+        contents,
+        systemInstruction: {
+          parts: [{ text: GEMINI_SYSTEM_PROMPT }]
+        }
+      };
+
+      const delays = [1000, 2000, 4000, 8000, 16000];
+      for (let attempt = 0; attempt <= delays.length; attempt++) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            if (attempt < delays.length && (response.status === 429 || response.status >= 500)) {
+              await new Promise(r => setTimeout(r, delays[attempt]));
+              continue;
+            }
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const result = await response.json();
+          const replyText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (!replyText) {
+            throw new Error('Empty response from Gemini');
+          }
+          return replyText;
+        } catch (err) {
+          if (attempt < delays.length) {
+            await new Promise(r => setTimeout(r, delays[attempt]));
+            continue;
+          }
+          throw err;
+        }
+      }
+    }
+
+    function sendQuickPrompt(text) {
+      if (isTutorLoading) return;
+      document.getElementById('tutor-input').value = text;
+      handleTutorSubmit();
+    }
+
+    async function handleTutorSubmit(retryText = null) {
+      if (isTutorLoading) return;
+      const input = document.getElementById('tutor-input');
+      const text = retryText !== null ? retryText : input.value.trim();
+      if (!text) return;
+
+      // Remove trailing error bubble before retrying
+      if (state.chatHistory.length > 0 && state.chatHistory[state.chatHistory.length - 1].isError) {
+        state.chatHistory.pop();
+      }
+
+      if (retryText === null) {
+        state.chatHistory.push({ role: 'user', text });
+        input.value = '';
+      }
+
+      lastFailedPrompt = null;
+      isTutorLoading = true;
+      setTutorInputDisabled(true);
+      renderChatMessages();
+
+      try {
+        const reply = await callGeminiTutor(state.chatHistory);
+        state.chatHistory.push({ role: 'ai', text: reply });
+        saveState();
+      } catch (err) {
+        lastFailedPrompt = text;
+        state.chatHistory.push({
+          role: 'ai',
+          isError: true,
+          text: 'Maaf, koneksi ke Gemini AI sedang mengalami gangguan. Silakan coba beberapa saat lagi.'
+        });
+      } finally {
+        isTutorLoading = false;
+        setTutorInputDisabled(false);
+        renderChatMessages();
+        if (input) input.focus();
+      }
+    }
+
+    function retryLastPrompt() {
+      let promptToRetry = lastFailedPrompt;
+      if (!promptToRetry) {
+        const lastUser = [...state.chatHistory].reverse().find(m => m.role === 'user');
+        promptToRetry = lastUser ? lastUser.text : null;
+      }
+      if (promptToRetry) {
+        handleTutorSubmit(promptToRetry);
+      }
+    }
+
+    document.getElementById('form-tutor').addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleTutorSubmit();
+    });
+
+    function resetChat() {
+      if (isTutorLoading) return;
+      lastFailedPrompt = null;
+      state.chatHistory = [
+        {
+          role: 'ai',
+          text: 'Halo! Saya Deriva AI, tutor Kalkulus kamu. 👋\nAda konsep turunan yang ingin kamu pelajari hari ini?'
+        }
+      ];
+      saveState();
+      renderChatMessages();
+    }
+
+    /* =======================================================================
+       12. EDIT PROFILE MODAL
+       ======================================================================= */
+    function openEditProfileModal() {
+      document.getElementById('edit-profile-name').value = state.user.name;
+      document.getElementById('edit-profile-email').value = state.user.email;
+      openModal('modal-edit-profile');
+    }
+
+    document.getElementById('form-edit-profile').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newName = document.getElementById('edit-profile-name').value.trim();
+      const newEmail = document.getElementById('edit-profile-email').value.trim();
+      if (!newName || !newEmail) return;
+
+      state.user.name = newName;
+      state.user.email = newEmail;
+      saveState();
+      syncUserUI();
+      closeModal('modal-edit-profile');
+      showToast('Profil berhasil diperbarui!', 'success');
+    });
+
+    /* =======================================================================
+       13. GLOBAL KEYBOARD / CLICK-OUTSIDE HANDLERS & INITIALIZATION
+       ======================================================================= */
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        ['modal-edit-profile', 'modal-forgot', 'modal-final-quiz'].forEach(closeModal);
+        const pop = document.getElementById('notification-popover');
+        if (pop) pop.classList.add('hidden');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      const pop = document.getElementById('notification-popover');
+      const btn = document.getElementById('notification-btn');
+      if (pop && !pop.classList.contains('hidden')) {
+        if (!pop.contains(e.target) && (!btn || !btn.contains(e.target))) {
+          pop.classList.add('hidden');
+        }
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      syncUserUI();
+      if (state.isAuthenticated) {
+        enterWorkspace(state.currentPage || 'dashboard');
+      } else {
+        document.getElementById('view-auth').classList.remove('hidden');
+        switchAuthMode('signin');
+      }
+    });
+  </script>
+</body>
+</html>
