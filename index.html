@@ -847,6 +847,159 @@
     </div>
   </section>
 
+  <!-- ===================== VIEW 4: FINAL QUIZ DEDICATED PAGE ===================== -->
+  <section id="view-quiz" class="hidden min-h-screen flex flex-col bg-[#f8fafc]">
+    <!-- Sticky Quiz Topbar -->
+    <header class="sticky top-0 z-30 h-16 bg-white/95 backdrop-blur border-b border-slate-200/80 px-4 sm:px-8 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <button onclick="exitFinalQuiz()" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 transition shrink-0">
+          <span>←</span>
+          <span class="hidden sm:inline">Back to Workspace</span>
+        </button>
+        <div class="h-5 w-px bg-slate-200 hidden sm:block"></div>
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center font-display font-extrabold text-sm text-white shrink-0">
+            ∂
+          </div>
+          <div class="text-xs sm:text-sm text-slate-400 font-medium truncate">
+            Deriva / <span id="quiz-topbar-title" class="text-slate-900 font-semibold">Final Quiz</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5 shrink-0">
+        <div id="quiz-timer-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs font-mono font-semibold text-slate-700 transition-colors">
+          <span>⏱</span>
+          <span id="quiz-timer-display">15:00</span>
+        </div>
+        <div id="quiz-topbar-progress" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-xl bg-brand-50 text-brand-600 text-xs font-bold">
+          0/5 Answered
+        </div>
+      </div>
+    </header>
+
+    <!-- Quiz Main Container -->
+    <main class="flex-1 max-w-[1060px] w-full mx-auto p-4 sm:p-8">
+      <!-- Active Quiz View -->
+      <div id="quiz-active-container" class="space-y-6">
+        <!-- Quiz Hero Header -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-card">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div>
+              <div id="quiz-hero-eyebrow" class="text-[11px] font-bold tracking-[0.14em] uppercase text-brand-500 mb-1">Final Challenge • Calculus I</div>
+              <h1 id="quiz-hero-title" class="font-display font-extrabold text-xl sm:text-2xl text-slate-900">Derivatives Final Quiz</h1>
+              <p id="quiz-hero-subtitle" class="text-xs sm:text-sm text-slate-500 mt-0.5">Uji pemahamanmu dari seluruh modul turunan. Pilih jawaban terbaik untuk setiap soal.</p>
+            </div>
+            <span id="quiz-hero-count" class="inline-flex items-center px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-[11px] font-bold tracking-wider uppercase self-start sm:self-center">
+              5 Questions
+            </span>
+          </div>
+          <!-- Progress Bar -->
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1.5">
+            <span id="quiz-progress-label">Progress pengerjaan: 0 dari 5 soal</span>
+            <span id="quiz-progress-pct" class="text-brand-600">0%</span>
+          </div>
+          <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div id="quiz-progress-bar" class="h-full bg-brand-500 rounded-full progress-fill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- 2-Column Layout: Question Card + Navigator Sidebar -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          <!-- Left: Question Card -->
+          <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-7 shadow-card space-y-6">
+            <div class="flex items-center justify-between gap-2 pb-4 border-b border-slate-100">
+              <span id="quiz-q-module-tag" class="px-2.5 py-1 rounded-lg bg-brand-50 text-brand-600 text-[11px] font-bold">
+                Module 02
+              </span>
+              <span id="quiz-q-counter" class="text-xs font-semibold text-slate-400">
+                Question 1 of 5
+              </span>
+            </div>
+
+            <div class="space-y-3">
+              <h2 id="quiz-q-text" class="font-display font-bold text-base sm:text-lg text-slate-900 leading-snug">
+                <!-- Question text -->
+              </h2>
+
+              <!-- Hint Toggle Button & Clue Box -->
+              <div class="pt-1">
+                <button id="quiz-btn-hint" type="button" onclick="toggleQuizHint()"
+                  class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/80 text-amber-800 text-xs font-semibold transition">
+                  <span>💡</span>
+                  <span id="quiz-btn-hint-label">Lihat Bantuan / Hint</span>
+                </button>
+                <div id="quiz-hint-box" class="hidden mt-3 p-4 rounded-xl bg-amber-50/75 border border-amber-200/80 text-xs text-amber-950 leading-relaxed">
+                  <div class="font-bold text-amber-800 mb-1 flex items-center gap-1.5">
+                    <span>💡</span>
+                    <span>Petunjuk Pengerjaan</span>
+                  </div>
+                  <p id="quiz-hint-text"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Options List -->
+            <div id="quiz-options-list" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+
+            <!-- Bottom Navigation Controls -->
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+              <button id="quiz-btn-prev" onclick="goToQuizQuestion(quizCurrentIdx - 1)"
+                class="px-4 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold text-slate-700 transition">
+                ← Previous
+              </button>
+              <button id="quiz-btn-next" onclick="handleQuizNextOrSubmit()"
+                class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-sm shadow-brand-500/25 transition">
+                Next Question →
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Question Navigator & Submit Box -->
+          <aside class="space-y-4 lg:sticky lg:top-24">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-card space-y-4">
+              <div>
+                <div class="font-display font-bold text-sm text-slate-900">Question Navigator</div>
+                <p class="text-[11px] text-slate-400 mt-0.5">Klik nomor untuk berpindah soal.</p>
+              </div>
+              <div id="quiz-nav-grid" class="grid grid-cols-5 gap-2">
+                <!-- Rendered via JS -->
+              </div>
+              <div class="flex items-center gap-4 pt-2 border-t border-slate-100 text-[11px] text-slate-500">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
+                  <span>Answered</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-200"></span>
+                  <span>Unanswered</span>
+                </div>
+              </div>
+              <button onclick="submitFinalQuiz()"
+                class="w-full py-3 rounded-xl bg-navy-900 hover:bg-navy-950 text-white text-xs font-semibold shadow-sm transition">
+                Submit Final Quiz ✓
+              </button>
+            </div>
+
+            <div class="rounded-2xl bg-brand-50/70 border border-brand-100 p-4">
+              <div class="text-xs font-bold text-brand-700 mb-1">💡 Tips Pengerjaan</div>
+              <p class="text-[11px] text-slate-600 leading-relaxed">
+                Pastikan semua soal sudah terisi sebelum menekan Submit. Setelah selesai, kamu dapat melihat pembahasan lengkap setiap soal.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Quiz Result & Review View -->
+      <div id="quiz-result-container" class="hidden space-y-6">
+        <!-- Rendered dynamically via JS -->
+      </div>
+    </main>
+  </section>
+
   <!-- ===================== MODAL: FORGOT PASSWORD ===================== -->
   <div id="modal-forgot" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl border border-slate-200 max-w-sm w-full p-6 shadow-soft space-y-4">
@@ -916,24 +1069,45 @@
     </div>
   </div>
 
-  <!-- ===================== MODAL: FINAL QUIZ ===================== -->
-  <div id="modal-final-quiz" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl border border-slate-200 max-w-2xl w-full max-h-[88vh] flex flex-col shadow-soft overflow-hidden">
-      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-        <div>
-          <div class="text-[10px] font-bold tracking-wider uppercase text-brand-500">Final Challenge</div>
-          <h3 class="font-display font-bold text-lg text-slate-900">Derivatives Final Quiz</h3>
+  <!-- ===================== MODAL: QUIZ SCORE POP-UP ===================== -->
+  <div id="modal-quiz-score" class="modal-backdrop hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-slate-200 max-w-md w-full overflow-hidden shadow-soft">
+      <div class="auth-navy-bg text-white p-6 text-center space-y-2">
+        <div id="quiz-modal-emoji" class="w-14 h-14 mx-auto rounded-2xl bg-white/15 flex items-center justify-center text-3xl mb-1">
+          🏆
         </div>
-        <button onclick="closeModal('modal-final-quiz')" class="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500">✕</button>
+        <div id="quiz-modal-subtitle" class="text-[11px] font-bold tracking-[0.14em] uppercase text-blue-200">
+          Quiz Selesai
+        </div>
+        <h3 id="quiz-modal-title" class="font-display font-extrabold text-xl">
+          Kerja Bagus!
+        </h3>
+        <div class="pt-2">
+          <div id="quiz-modal-score" class="font-display font-extrabold text-5xl text-white">100%</div>
+          <div id="quiz-modal-detail" class="text-xs text-blue-100/85 mt-1">
+            5 dari 5 soal dijawab benar • Waktu 01:20
+          </div>
+        </div>
       </div>
-      <div id="final-quiz-body" class="p-6 overflow-y-auto space-y-5">
-        <!-- Rendered via JS -->
-      </div>
-      <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-3">
-        <div id="fq-result-summary" class="text-xs font-semibold text-slate-600">Jawab semua 5 soal lalu klik Submit.</div>
-        <button id="fq-submit-btn" onclick="submitFinalQuiz()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold transition">
-          Submit Quiz
+
+      <div class="p-6 space-y-3">
+        <p id="quiz-modal-message" class="text-xs text-slate-500 text-center leading-relaxed">
+          Nilai kamu sudah disimpan. Klik tombol di bawah untuk meninjau jawaban benar beserta langkah pengerjaan tiap soal.
+        </p>
+        <button type="button" onclick="openQuizReviewFromModal()"
+          class="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-sm shadow-brand-500/25 transition">
+          📋 Review Jawaban & Pembahasan
         </button>
+        <div class="grid grid-cols-2 gap-2.5">
+          <button type="button" onclick="retakeActiveQuiz()"
+            class="py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition">
+            ↻ Ulangi Quiz
+          </button>
+          <button type="button" onclick="closeQuizScoreAndExit()"
+            class="py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition">
+            ← Kembali
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1192,31 +1366,827 @@
 
     const FINAL_QUIZ_QUESTIONS = [
       {
+        moduleTag: 'Module 02 • Rules of Differentiation',
         q: "1. Berapakah turunan dari f(x) = 4x³ − 2x + 9?",
         options: ['12x² − 2', '12x² − 2x', '4x² − 2'],
-        correct: 0
+        correct: 0,
+        hint: "Gunakan Power Rule d/dx(a·xⁿ) = a·n·xⁿ⁻¹ untuk setiap suku, dan ingat turunan konstanta adalah 0.",
+        explanation: "Setiap suku diturunkan terpisah menggunakan Power Rule dan Constant Rule.",
+        steps: [
+          "d/dx(4x³) = 4 · 3 · x^(3−1) = 12x²",
+          "d/dx(−2x) = −2 · 1 · x⁰ = −2",
+          "d/dx(9) = 0",
+          "Gabungkan hasilnya: f'(x) = 12x² − 2"
+        ]
       },
       {
+        moduleTag: 'Module 01 • Introduction to Derivatives',
         q: "2. Jika f'(x) < 0 pada interval (a, b), maka grafik fungsi f pada interval tersebut...",
         options: ['Selalu naik', 'Selalu turun', 'Mendatar'],
-        correct: 1
+        correct: 1,
+        hint: "Ingat makna geometris turunan: f'(x) adalah kemiringan (gradien) garis singgung. Jika gradiennya negatif, garisnya miring ke mana?",
+        explanation: "Turunan bernilai negatif (f'(x) < 0) berarti gradien garis singgung negatif, sehingga nilai fungsi f selalu turun pada interval tersebut.",
+        steps: [
+          "f'(x) > 0 → gradien positif → grafik naik",
+          "f'(x) < 0 → gradien negatif → grafik turun",
+          "f'(x) = 0 → gradien nol → garis singgung mendatar"
+        ]
       },
       {
+        moduleTag: 'Module 03 • Advanced Derivatives',
         q: "3. Turunan dari f(x) = (5x − 1)³ adalah...",
         options: ['3(5x − 1)²', '15(5x − 1)²', '5(5x − 1)²'],
-        correct: 1
+        correct: 1,
+        hint: "Gunakan Chain Rule: turunkan pangkat luarnya dulu, lalu jangan lupa kalikan dengan turunan fungsi di dalam kurung (5x − 1).",
+        explanation: "Chain Rule mengalikan turunan fungsi luar dengan turunan fungsi dalam.",
+        steps: [
+          "Misalkan u = 5x − 1, sehingga u' = 5",
+          "Turunkan pangkat luar: d/du(u³) = 3u² = 3(5x − 1)²",
+          "Kalikan dengan u': 3(5x − 1)² · 5 = 15(5x − 1)²"
+        ]
       },
       {
+        moduleTag: 'Module 04 • Applications of Derivatives',
         q: "4. Gradien garis singgung kurva y = x³ pada x = 2 adalah...",
         options: ['6', '8', '12'],
-        correct: 2
+        correct: 2,
+        hint: "Gradien garis singgung di x = a adalah m = f'(a). Cari turunan y' dulu, lalu substitusikan x = 2.",
+        explanation: "Gradien garis singgung diperoleh dengan mensubstitusikan nilai x ke turunan pertama.",
+        steps: [
+          "Cari turunan pertama: y' = d/dx(x³) = 3x²",
+          "Substitusikan x = 2: m = y'(2) = 3 · (2)²",
+          "m = 3 · 4 = 12"
+        ]
       },
       {
+        moduleTag: 'Module 03 • Advanced Derivatives',
         q: "5. Turunan dari f(x) = sin(x) adalah...",
         options: ['cos(x)', '−cos(x)', 'tan(x)'],
-        correct: 0
+        correct: 0,
+        hint: "Ingat pasangan turunan trigonometri dasar: turunan sin(x) bernilai positif, sedangkan turunan cos(x) bernilai negatif.",
+        explanation: "Aturan turunan trigonometri dasar menyatakan bahwa d/dx [sin(x)] = cos(x).",
+        steps: [
+          "Gunakan rumus dasar trigonometri: d/dx [sin(x)] = cos(x)",
+          "Sebagai pengingat: d/dx [cos(x)] = −sin(x)"
+        ]
+      },
+      {
+        moduleTag: 'Module 01 • Introduction to Derivatives',
+        q: "6. Dengan definisi limit, turunan dari fungsi linear f(x) = 5x − 3 adalah...",
+        options: ['5', '5x', '−3'],
+        correct: 0,
+        hint: "Substitusikan f(x+h) = 5(x+h) − 3 ke rumus [f(x+h) − f(x)] / h, lalu bagi dengan h.",
+        explanation: "Fungsi linear 5x − 3 memiliki kemiringan konstan sebesar 5 di setiap titik.",
+        steps: [
+          "f(x+h) − f(x) = [5(x+h) − 3] − (5x − 3) = 5h",
+          "Bagi dengan h: 5h / h = 5",
+          "Ambil lim h→0 (5) = 5, jadi f'(x) = 5"
+        ]
+      },
+      {
+        moduleTag: 'Module 01 • Introduction to Derivatives',
+        q: "7. Arti geometris dari f'(a) = 0 pada kurva yang mulus di titik x = a adalah...",
+        options: [
+          'Garis singgungnya mendatar (horizontal)',
+          'Kurva memotong sumbu-x di x = a',
+          'Nilai fungsi f(a) pasti sama dengan 0'
+        ],
+        correct: 0,
+        hint: "Ingat bahwa f'(a) adalah gradien garis singgung. Garis yang gradiennya 0 berbentuk seperti apa?",
+        explanation: "Gradien 0 berarti garis singgung tidak miring ke atas maupun ke bawah, melainkan mendatar (horizontal).",
+        steps: [
+          "f'(a) menyatakan gradien (m) garis singgung di x = a",
+          "Jika m = 0, garis tersebut sejajar dengan sumbu-x (horizontal)"
+        ]
+      },
+      {
+        moduleTag: 'Module 01 • Introduction to Derivatives',
+        q: "8. Jika s(t) adalah posisi benda terhadap waktu t, maka turunan kedua s''(t) menyatakan...",
+        options: ['Jarak total tempuh', 'Percepatan sesaat', 'Kecepatan rata-rata'],
+        correct: 1,
+        hint: "Turunan pertama s'(t) adalah kecepatan v(t). Laju perubahan kecepatan terhadap waktu disebut apa?",
+        explanation: "Turunan dari kecepatan v'(t) = s''(t) mengukur seberapa cepat kecepatan berubah, yaitu percepatan sesaat a(t).",
+        steps: [
+          "Posisi = s(t)",
+          "Kecepatan = v(t) = s'(t)",
+          "Percepatan = a(t) = v'(t) = s''(t)"
+        ]
+      },
+      {
+        moduleTag: 'Module 01 • Introduction to Derivatives',
+        q: "9. Laju perubahan rata-rata fungsi f(x) = x² pada interval [1, 3] adalah...",
+        options: ['2', '4', '8'],
+        correct: 1,
+        hint: "Gunakan rumus laju perubahan rata-rata: [f(b) − f(a)] / (b − a) dengan a = 1 dan b = 3.",
+        explanation: "Laju perubahan rata-rata sama dengan gradien garis potong antara x = 1 dan x = 3.",
+        steps: [
+          "Hitung f(3) = 3² = 9 dan f(1) = 1² = 1",
+          "Substitusikan ke rumus: [f(3) − f(1)] / (3 − 1) = (9 − 1) / 2",
+          "Hasilnya: 8 / 2 = 4"
+        ]
+      },
+      {
+        moduleTag: 'Module 02 • Rules of Differentiation',
+        q: "10. Turunan dari f(x) = 7x⁴ − 3x² + 5x − 11 adalah...",
+        options: ['28x³ − 6x + 5', '28x³ − 6x − 11', '7x³ − 3x + 5'],
+        correct: 0,
+        hint: "Turunkan satu per satu menggunakan Power Rule, dan ingat turunan konstanta −11 adalah 0.",
+        explanation: "Setiap suku diturunkan secara terpisah dengan Power Rule dan Constant Rule.",
+        steps: [
+          "d/dx(7x⁴) = 28x³",
+          "d/dx(−3x²) = −6x",
+          "d/dx(5x) = 5 dan d/dx(−11) = 0",
+          "Hasil akhir: f'(x) = 28x³ − 6x + 5"
+        ]
+      },
+      {
+        moduleTag: 'Module 02 • Rules of Differentiation',
+        q: "11. Jika f(x) = 2√x, berapakah f'(x)?",
+        options: ['1 / √x', '1 / (2√x)', '2 / √x'],
+        correct: 0,
+        hint: "Ubah √x menjadi x^(1/2), lalu terapkan Power Rule. Perhatikan 2 × (1/2) = 1.",
+        explanation: "Koefisien 2 saling menghabiskan dengan pangkat 1/2 saat diturunkan.",
+        steps: [
+          "Tulis ulang: f(x) = 2 · x^(1/2)",
+          "Power Rule: f'(x) = 2 · (1/2) · x^(1/2 − 1) = 1 · x^(−1/2)",
+          "Ubah kembali ke bentuk akar: f'(x) = 1 / √x"
+        ]
+      },
+      {
+        moduleTag: 'Module 02 • Rules of Differentiation',
+        q: "12. Turunan dari f(x) = 3 / x² adalah...",
+        options: ['−6 / x³', '6 / x³', '−3 / x³'],
+        correct: 0,
+        hint: "Ubah 3 / x² menjadi bentuk pangkat negatif 3x⁻², lalu gunakan Power Rule.",
+        explanation: "Mengalikan 3 dengan pangkat −2 menghasilkan −6, dan pangkatnya turun dari −2 menjadi −3.",
+        steps: [
+          "Tulis ulang: f(x) = 3x⁻²",
+          "Power Rule: f'(x) = 3 · (−2) · x^(−2 − 1) = −6x⁻³",
+          "Kembalikan ke bentuk pecahan: f'(x) = −6 / x³"
+        ]
+      },
+      {
+        moduleTag: 'Module 02 • Rules of Differentiation',
+        q: "13. Jika f(x) = x³ − 4x² + 2x, berapakah nilai f'(2)?",
+        options: ['−2', '2', '−4'],
+        correct: 0,
+        hint: "Cari dulu rumus f'(x) dengan Power Rule, kemudian ganti x dengan 2.",
+        explanation: "Turunan pertamanya adalah f'(x) = 3x² − 8x + 2, yang bernilai −2 saat x = 2.",
+        steps: [
+          "Cari turunan: f'(x) = 3x² − 8x + 2",
+          "Substitusikan x = 2: f'(2) = 3(2)² − 8(2) + 2",
+          "f'(2) = 12 − 16 + 2 = −2"
+        ]
+      },
+      {
+        moduleTag: 'Module 03 • Advanced Derivatives',
+        q: "14. Menggunakan Product Rule, turunan dari f(x) = x² · cos(x) adalah...",
+        options: [
+          '2x cos(x) − x² sin(x)',
+          '2x cos(x) + x² sin(x)',
+          '−2x sin(x)'
+        ],
+        correct: 0,
+        hint: "Misalkan u = x² (u' = 2x) dan v = cos(x) (v' = −sin(x)), lalu masukkan ke u'v + uv'.",
+        explanation: "Karena turunan cos(x) adalah −sin(x), tanda suku kedua menjadi negatif.",
+        steps: [
+          "u = x² → u' = 2x",
+          "v = cos(x) → v' = −sin(x)",
+          "f'(x) = u'v + uv' = (2x)cos(x) + x²(−sin(x))",
+          "f'(x) = 2x cos(x) − x² sin(x)"
+        ]
+      },
+      {
+        moduleTag: 'Module 03 • Advanced Derivatives',
+        q: "15. Menggunakan Quotient Rule, turunan dari f(x) = (2x) / (x − 1) adalah...",
+        options: ['−2 / (x − 1)²', '2 / (x − 1)²', '−2x / (x − 1)²'],
+        correct: 0,
+        hint: "Misalkan u = 2x (u' = 2) dan v = x − 1 (v' = 1). Hitung (u'v − uv') / v².",
+        explanation: "Suku 2x pada pembilang saling menghabiskan sehingga tersisa −2 di pembilang.",
+        steps: [
+          "u = 2x → u' = 2;  v = x − 1 → v' = 1",
+          "Pembilang: u'v − uv' = 2(x − 1) − 2x(1) = 2x − 2 − 2x = −2",
+          "Penyebut: v² = (x − 1)²",
+          "Hasil: f'(x) = −2 / (x − 1)²"
+        ]
+      },
+      {
+        moduleTag: 'Module 03 • Advanced Derivatives',
+        q: "16. Dengan Chain Rule, turunan dari f(x) = sin(x²) adalah...",
+        options: ['cos(x²)', '2x cos(x²)', '−2x cos(x²)'],
+        correct: 1,
+        hint: "Turunkan fungsi luar sin(u) menjadi cos(u), lalu kalikan dengan turunan fungsi dalam u = x².",
+        explanation: "Chain Rule mengalikan cos(x²) dengan turunan dari x² yaitu 2x.",
+        steps: [
+          "Misalkan u = x² → u' = 2x",
+          "Turunan sin(u) = cos(u) · u'",
+          "f'(x) = cos(x²) · 2x = 2x cos(x²)"
+        ]
+      },
+      {
+        moduleTag: 'Module 04 • Applications of Derivatives',
+        q: "17. Titik stasioner dari fungsi f(x) = x² − 10x + 21 terletak di x = ...",
+        options: ['x = 5', 'x = 10', 'x = −5'],
+        correct: 0,
+        hint: "Syarat titik stasioner adalah f'(x) = 0. Selesaikan persamaan 2x − 10 = 0.",
+        explanation: "Menyamakan turunan pertama dengan nol memberikan lokasi x titik stasioner.",
+        steps: [
+          "Cari turunan pertama: f'(x) = 2x − 10",
+          "Tetapkan f'(x) = 0 → 2x − 10 = 0",
+          "2x = 10 → x = 5"
+        ]
+      },
+      {
+        moduleTag: 'Module 04 • Applications of Derivatives',
+        q: "18. Persamaan garis singgung kurva y = x² − 2x di titik (3, 3) adalah...",
+        options: ['y = 4x − 9', 'y = 4x + 9', 'y = 2x − 3'],
+        correct: 0,
+        hint: "Cari gradien m = y'(3) terlebih dahulu, lalu substitusikan ke rumus y − y₁ = m(x − x₁).",
+        explanation: "Di titik (3, 3), gradiennya adalah 4 sehingga persamaan garis singgungnya y = 4x − 9.",
+        steps: [
+          "Turunan: y' = 2x − 2",
+          "Di x = 3, gradien m = 2(3) − 2 = 4",
+          "y − 3 = 4(x − 3) → y = 4x − 12 + 3",
+          "Hasil: y = 4x − 9"
+        ]
+      },
+      {
+        moduleTag: 'Module 04 • Applications of Derivatives',
+        q: "19. Nilai maksimum dari fungsi f(x) = −2x² + 8x + 1 adalah...",
+        options: ['2', '9', '17'],
+        correct: 1,
+        hint: "Cari nilai x saat f'(x) = 0 dulu, lalu masukkan nilai x tersebut ke fungsi asli f(x).",
+        explanation: "Parabola terbuka ke bawah ini mencapai puncak di x = 2 dengan nilai maksimum f(2) = 9.",
+        steps: [
+          "Turunan pertama: f'(x) = −4x + 8",
+          "f'(x) = 0 → −4x + 8 = 0 → x = 2",
+          "Substitusikan x = 2 ke f(x): f(2) = −2(2)² + 8(2) + 1 = −8 + 16 + 1 = 9"
+        ]
+      },
+      {
+        moduleTag: 'Module 04 • Applications of Derivatives',
+        q: "20. Sebuah benda bergerak dengan posisi s(t) = 2t³ − 9t² + 12t (meter). Pada detik ke berapa benda berhenti sesaat (v(t) = 0)?",
+        options: [
+          't = 1 detik dan t = 2 detik',
+          't = 2 detik dan t = 3 detik',
+          't = 1 detik dan t = 3 detik'
+        ],
+        correct: 0,
+        hint: "Benda berhenti sesaat ketika kecepatannya v(t) = s'(t) = 0. Turunkan s(t), lalu faktorkan persamaan kuadratnya!",
+        explanation: "Persamaan v(t) = 6t² − 18t + 12 = 0 dapat difaktorkan menjadi 6(t − 1)(t − 2) = 0.",
+        steps: [
+          "Cari fungsi kecepatan: v(t) = s'(t) = 6t² − 18t + 12",
+          "Tetapkan v(t) = 0 → 6t² − 18t + 12 = 0",
+          "Bagi kedua ruas dengan 6: t² − 3t + 2 = 0",
+          "Faktorkan: (t − 1)(t − 2) = 0 → t = 1 detik dan t = 2 detik"
+        ]
       }
     ];
+
+    const MODULE_QUIZZES = {
+      1: [
+        {
+          moduleTag: 'Module 01 • Introduction to Derivatives',
+          q: "1. Secara fisik, jika s(t) menyatakan posisi benda terhadap waktu t, maka turunan s'(t) menyatakan...",
+          options: ['Jarak total tempuh', 'Kecepatan sesaat benda', 'Massa benda'],
+          correct: 1,
+          hint: "Turunan mengukur laju perubahan suatu besaran terhadap waktu. Laju perubahan posisi disebut apa?",
+          explanation: "Turunan fungsi posisi terhadap waktu menunjukkan seberapa cepat posisi berubah pada saat tertentu, yaitu kecepatan sesaat.",
+          steps: [
+            "Posisi benda = s(t)",
+            "Laju perubahan posisi terhadap waktu = ds/dt = s'(t)",
+            "Besaran laju perubahan posisi adalah kecepatan sesaat v(t)"
+          ]
+        },
+        {
+          moduleTag: 'Module 01 • Introduction to Derivatives',
+          q: "2. Dalam definisi limit f'(x) = lim h→0 [f(x+h) − f(x)] / h, nilai h mendekati 0 bertujuan untuk...",
+          options: ['Menghitung luas di bawah kurva', 'Mengubah gradien garis potong menjadi gradien garis singgung', 'Mencari titik potong sumbu-x'],
+          correct: 1,
+          hint: "Ketika dua titik pada kurva (x dan x+h) didekatkan hingga jaraknya hampir nol, garis penghubungnya berubah menjadi garis apa?",
+          explanation: "Saat h → 0, dua titik pada garis potong (secant line) menyatu menjadi satu titik sehingga gradiennya menjadi gradien garis singgung (tangent line).",
+          steps: [
+            "[f(x+h) − f(x)] / h adalah gradien garis potong antara x dan x+h",
+            "Dengan mengambil limit h → 0, jarak kedua titik mendekati 0",
+            "Hasilnya adalah kemiringan tepat di satu titik (garis singgung)"
+          ]
+        },
+        {
+          moduleTag: 'Module 01 • Introduction to Derivatives',
+          q: "3. Jika grafik suatu fungsi memiliki garis singgung mendatar di titik x = c, maka nilai f'(c) adalah...",
+          options: ['Positif (> 0)', 'Negatif (< 0)', 'Nol (= 0)'],
+          correct: 2,
+          hint: "Berapakah kemiringan (gradien) sebuah garis horizontal yang tidak naik dan tidak turun?",
+          explanation: "Garis mendatar (horizontal) memiliki kemiringan 0, sehingga turunan di titik tersebut bernilai 0.",
+          steps: [
+            "Turunan f'(c) = gradien garis singgung di x = c",
+            "Garis mendatar tidak mengalami kenaikan maupun penurunan (Δy = 0)",
+            "Maka m = Δy/Δx = 0 → f'(c) = 0"
+          ]
+        },
+        {
+          moduleTag: 'Module 01 • Introduction to Derivatives',
+          q: "4. Menggunakan definisi limit untuk f(x) = 3x + 2, berapakah nilai f'(x)?",
+          options: ['3', '3x', '2'],
+          correct: 0,
+          hint: "Substitusikan f(x+h) = 3(x+h) + 2 ke dalam [f(x+h) − f(x)] / h lalu sederhanakan.",
+          explanation: "Fungsi linear 3x + 2 memiliki kemiringan tetap sebesar 3 di setiap titik.",
+          steps: [
+            "f(x+h) − f(x) = [3(x+h) + 2] − (3x + 2) = 3x + 3h + 2 − 3x − 2 = 3h",
+            "Bagi dengan h: (3h) / h = 3",
+            "Ambil lim h→0 dari 3, hasilnya f'(x) = 3"
+          ]
+        },
+        {
+          moduleTag: 'Module 01 • Introduction to Derivatives',
+          q: "5. Notasi Leibniz untuk menyatakan turunan fungsi y terhadap variabel x adalah...",
+          options: ['dy / dx', 'dx / dy', 'Δy / Δx'],
+          correct: 0,
+          hint: "Notasi Leibniz menggunakan huruf 'd' (diferensial) dengan variabel terikat (y) di atas dan variabel bebas (x) di bawah.",
+          explanation: "Notasi Leibniz dy/dx menyatakan laju perubahan sesaat y terhadap x, sedangkan Δy/Δx menyatakan laju perubahan rata-rata.",
+          steps: [
+            "Δy / Δx adalah laju perubahan rata-rata",
+            "Ketika Δx → 0, notasi berubah menjadi bentuk diferensial dy / dx",
+            "Jadi notasi Leibniz yang tepat adalah dy / dx"
+          ]
+        },
+        {
+          moduleTag: 'Module 01 • Introduction to Derivatives',
+          q: "6. Jika grafik fungsi f(x) selalu turun pada interval (a, b), maka nilai turunannya f'(x) pada interval tersebut adalah...",
+          options: ['Positif (> 0)', 'Negatif (< 0)', 'Nol (= 0)'],
+          correct: 1,
+          hint: "Jika kurva bergerak turun dari kiri ke kanan, garis singgungnya miring ke bawah (gradiennya bertanda apa?).",
+          explanation: "Fungsi yang turun memiliki gradien garis singgung negatif, sehingga f'(x) < 0.",
+          steps: [
+            "Fungsi naik → f'(x) > 0",
+            "Fungsi turun → f'(x) < 0",
+            "Fungsi konstan → f'(x) = 0"
+          ]
+        },
+        {
+          moduleTag: 'Module 01 • Introduction to Derivatives',
+          q: "7. Dengan definisi limit, turunan dari fungsi konstan f(x) = 7 adalah...",
+          options: ['7', '1', '0'],
+          correct: 2,
+          hint: "Untuk fungsi konstan f(x) = 7, nilai f(x+h) juga sama dengan 7. Berapa hasil f(x+h) − f(x)?",
+          explanation: "Fungsi konstan tidak mengalami perubahan nilai sehingga selisih f(x+h) − f(x) = 0, dan turunannya adalah 0.",
+          steps: [
+            "f(x+h) = 7 dan f(x) = 7",
+            "[f(x+h) − f(x)] / h = (7 − 7) / h = 0 / h = 0",
+            "lim h→0 (0) = 0, jadi f'(x) = 0"
+          ]
+        },
+        {
+          moduleTag: 'Module 01 • Introduction to Derivatives',
+          q: "8. Jika f(x) = x², berapakah laju perubahan sesaat (gradien garis singgung) di titik x = 3?",
+          options: ['3', '6', '9'],
+          correct: 1,
+          hint: "Dari contoh modul, turunan dari f(x) = x² adalah f'(x) = 2x. Tinggal substitusikan x = 3.",
+          explanation: "Laju perubahan sesaat di x = 3 adalah nilai f'(3).",
+          steps: [
+            "Diketahui f(x) = x² sehingga f'(x) = 2x",
+            "Substitusikan x = 3: f'(3) = 2(3)",
+            "Hasilnya f'(3) = 6"
+          ]
+        },
+        {
+          moduleTag: 'Module 01 • Introduction to Derivatives',
+          q: "9. Garis yang menghubungkan dua titik berbeda (x, f(x)) dan (x+h, f(x+h)) pada kurva sebelum limit h → 0 diambil disebut...",
+          options: ['Garis singgung (tangent)', 'Garis potong (secant)', 'Garis normal'],
+          correct: 1,
+          hint: "Garis yang memotong kurva di dua titik dikenal dengan istilah secant line.",
+          explanation: "Garis yang memotong kurva di dua titik disebut garis potong (secant line), yang gradiennya menjadi garis singgung saat h → 0.",
+          steps: [
+            "Dua titik berbeda pada kurva membentuk garis potong (secant line)",
+            "Gradien garis potong = [f(x+h) − f(x)] / h",
+            "Saat h → 0, garis potong berubah menjadi garis singgung (tangent line)"
+          ]
+        },
+        {
+          moduleTag: 'Module 01 • Introduction to Derivatives',
+          q: "10. Jika diketahui f'(2) = 5, arti geometris dari pernyataan tersebut adalah...",
+          options: [
+            'Nilai fungsi f di x = 2 adalah 5',
+            'Kemiringan garis singgung kurva f di x = 2 adalah 5',
+            'Kurva memotong sumbu-y di titik 5'
+          ],
+          correct: 1,
+          hint: "Bedakan antara f(2) (tinggi/nilai kurva) dengan f'(2) (kemiringan garis singgungnya).",
+          explanation: "Nilai turunan f'(a) secara geometris selalu menyatakan gradien (kemiringan) garis singgung kurva di titik x = a.",
+          steps: [
+            "f(2) menyatakan koordinat y pada kurva saat x = 2",
+            "f'(2) menyatakan kemiringan (gradien) garis singgung di x = 2",
+            "Jadi f'(2) = 5 berarti gradien garis singgung di x = 2 adalah 5"
+          ]
+        }
+      ],
+      2: [
+        {
+          moduleTag: 'Module 02 • Rules of Differentiation',
+          q: "1. Berapakah turunan dari fungsi konstan f(x) = 2026?",
+          options: ['2026', '1', '0'],
+          correct: 2,
+          hint: "Gunakan Constant Rule: fungsi konstan tidak pernah berubah nilainya berapa pun nilai x.",
+          explanation: "Menurut Constant Rule, turunan dari konstanta apa pun selalu sama dengan 0.",
+          steps: [
+            "f(x) = 2026 adalah fungsi konstan (c = 2026)",
+            "Sesuai Constant Rule: d/dx(c) = 0",
+            "Jadi f'(x) = 0"
+          ]
+        },
+        {
+          moduleTag: 'Module 02 • Rules of Differentiation',
+          q: "2. Dengan Power Rule, turunan dari f(x) = 6x⁵ adalah...",
+          options: ['30x⁴', '30x⁵', '6x⁴'],
+          correct: 0,
+          hint: "Kalikan koefisien (6) dengan pangkatnya (5), lalu kurangi pangkatnya dengan 1.",
+          explanation: "Power Rule: d/dx(a·xⁿ) = a·n·xⁿ⁻¹.",
+          steps: [
+            "Identifikasi a = 6 dan n = 5",
+            "Kalikan koefisien dan pangkat: 6 × 5 = 30",
+            "Kurangi pangkat dengan 1: 5 − 1 = 4",
+            "Hasil: f'(x) = 30x⁴"
+          ]
+        },
+        {
+          moduleTag: 'Module 02 • Rules of Differentiation',
+          q: "3. Turunan dari f(x) = 2x³ − 7x² + 5x − 4 adalah...",
+          options: ['6x² − 14x + 5', '6x² − 7x + 5', '2x² − 14x + 5'],
+          correct: 0,
+          hint: "Turunkan satu per satu menggunakan Sum & Difference Rule, lalu hilangkan konstanta −4.",
+          explanation: "Turunan polinomial dilakukan suku demi suku menggunakan Power Rule dan Constant Rule.",
+          steps: [
+            "d/dx(2x³) = 6x²",
+            "d/dx(−7x²) = −14x",
+            "d/dx(5x) = 5",
+            "d/dx(−4) = 0",
+            "Hasil akhir: f'(x) = 6x² − 14x + 5"
+          ]
+        },
+        {
+          moduleTag: 'Module 02 • Rules of Differentiation',
+          q: "4. Jika f(x) = x⁻² (atau 1/x²), maka f'(x) adalah...",
+          options: ['−2x⁻¹', '−2x⁻³', '2x⁻³'],
+          correct: 1,
+          hint: "Power Rule juga berlaku untuk pangkat negatif! Hati-hati saat menghitung (−2) − 1.",
+          explanation: "Pangkat −2 dikalikan ke depan, lalu pangkat barunya menjadi −2 − 1 = −3.",
+          steps: [
+            "Gunakan Power Rule dengan n = −2",
+            "f'(x) = (−2) · x^(−2 − 1)",
+            "f'(x) = −2x⁻³ (atau −2 / x³)"
+          ]
+        },
+        {
+          moduleTag: 'Module 02 • Rules of Differentiation',
+          q: "5. Turunan dari f(x) = 8x adalah...",
+          options: ['8', '8x', '0'],
+          correct: 0,
+          hint: "Ingat bahwa x sama dengan x¹. Kalikan 1 ke depan lalu pangkatnya menjadi x⁰ = 1.",
+          explanation: "Untuk fungsi linear ax, turunannya selalu koefisien a.",
+          steps: [
+            "Tulis f(x) = 8x¹",
+            "f'(x) = 8 · 1 · x^(1−1) = 8x⁰",
+            "Karena x⁰ = 1, maka f'(x) = 8"
+          ]
+        },
+        {
+          moduleTag: 'Module 02 • Rules of Differentiation',
+          q: "6. Jika f(x) = √x (atau x^(1/2)), maka f'(x) adalah...",
+          options: ['1 / (2√x)', '2√x', '1 / √x'],
+          correct: 0,
+          hint: "Ubah √x menjadi x^(1/2), lalu terapkan Power Rule: (1/2) · x^(1/2 − 1).",
+          explanation: "Power Rule berlaku untuk pangkat pecahan, menghasilkan (1/2)x^(-1/2) = 1 / (2√x).",
+          steps: [
+            "Ubah bentuk akar: f(x) = x^(1/2)",
+            "Terapkan Power Rule: f'(x) = (1/2) · x^(1/2 − 1) = (1/2) · x^(−1/2)",
+            "Ubah kembali ke bentuk akar: f'(x) = 1 / (2√x)"
+          ]
+        },
+        {
+          moduleTag: 'Module 02 • Rules of Differentiation',
+          q: "7. Turunan dari f(x) = 4x⁴ + 3x² − x adalah...",
+          options: ['16x³ + 6x − 1', '16x³ + 6x', '4x³ + 3x − 1'],
+          correct: 0,
+          hint: "Jangan lupa suku terakhir (−x) memiliki turunan −1, bukan 0!",
+          explanation: "Turunkan setiap suku secara terpisah dengan Power Rule.",
+          steps: [
+            "d/dx(4x⁴) = 16x³",
+            "d/dx(3x²) = 6x",
+            "d/dx(−x) = −1",
+            "Gabungkan: f'(x) = 16x³ + 6x − 1"
+          ]
+        },
+        {
+          moduleTag: 'Module 02 • Rules of Differentiation',
+          q: "8. Jika f(x) = 1/x (atau x⁻¹), berapakah f'(x)?",
+          options: ['1 / x²', '−1 / x²', '−1 / x'],
+          correct: 1,
+          hint: "Tulis 1/x sebagai x⁻¹, lalu gunakan Power Rule dengan n = −1.",
+          explanation: "Turunan dari x⁻¹ adalah (−1)x⁻² atau −1/x².",
+          steps: [
+            "Ubah bentuk pecahan: f(x) = x⁻¹",
+            "Terapkan Power Rule: f'(x) = (−1) · x^(−1 − 1) = −x⁻²",
+            "Kembalikan ke bentuk pecahan: f'(x) = −1 / x²"
+          ]
+        },
+        {
+          moduleTag: 'Module 02 • Rules of Differentiation',
+          q: "9. Berapakah nilai f'(1) jika f(x) = 5x⁴ − 3x² + 2x?",
+          options: ['14', '16', '12'],
+          correct: 1,
+          hint: "Cari dulu rumus f'(x) menggunakan Power Rule, lalu ganti semua x dengan 1.",
+          explanation: "Setelah menemukan f'(x) = 20x³ − 6x + 2, substitusi x = 1 menghasilkan 16.",
+          steps: [
+            "Cari turunan: f'(x) = 20x³ − 6x + 2",
+            "Substitusikan x = 1: f'(1) = 20(1)³ − 6(1) + 2",
+            "f'(1) = 20 − 6 + 2 = 16"
+          ]
+        },
+        {
+          moduleTag: 'Module 02 • Rules of Differentiation',
+          q: "10. Turunan dari f(x) = (1/3)x³ − (1/2)x² + 6 adalah...",
+          options: ['x² − x', '3x² − 2x', 'x² − x + 6'],
+          correct: 0,
+          hint: "Perhatikan pecahan (1/3) × 3 = 1 dan (1/2) × 2 = 1, sedangkan turunan 6 adalah 0.",
+          explanation: "Koefisien pecahan saling menghabiskan dengan pangkatnya saat Power Rule diterapkan.",
+          steps: [
+            "d/dx((1/3)x³) = (1/3) · 3 · x² = x²",
+            "d/dx(−(1/2)x²) = −(1/2) · 2 · x = −x",
+            "d/dx(6) = 0",
+            "Hasil akhir: f'(x) = x² − x"
+          ]
+        }
+      ],
+      3: [
+        {
+          moduleTag: 'Module 03 • Advanced Derivatives',
+          q: "1. Jika f(x) = u(x) · v(x), manakah rumus Product Rule yang benar?",
+          options: ["u' · v'", "u'v + uv'", "u'v − uv'"],
+          correct: 1,
+          hint: "Turunan hasil kali adalah penjumlahan dari (turunan pertama × kedua) dan (pertama × turunan kedua).",
+          explanation: "Product Rule menyatakan bahwa (u·v)' = u'v + uv'.",
+          steps: [
+            "Tentukan fungsi pertama u dan fungsi kedua v",
+            "Hitung masing-masing turunannya: u' dan v'",
+            "Substitusikan ke rumus: f'(x) = u'v + uv'"
+          ]
+        },
+        {
+          moduleTag: 'Module 03 • Advanced Derivatives',
+          q: "2. Gunakan Chain Rule untuk menentukan turunan dari f(x) = (4x + 3)³.",
+          options: ['3(4x + 3)²', '12(4x + 3)²', '12(4x + 3)³'],
+          correct: 1,
+          hint: "Turunkan pangkat 3 terlebih dahulu, lalu kalikan dengan turunan dari bagian dalam (4x + 3).",
+          explanation: "Chain Rule mengalikan turunan pangkat luar dengan turunan ekspresi di dalam kurung.",
+          steps: [
+            "Misalkan u = 4x + 3 → u' = 4",
+            "Turunan luar: 3u² = 3(4x + 3)²",
+            "Kalikan dengan u': 3(4x + 3)² · 4 = 12(4x + 3)²"
+          ]
+        },
+        {
+          moduleTag: 'Module 03 • Advanced Derivatives',
+          q: "3. Dalam Quotient Rule untuk f(x) = u(x) / v(x), penyebut dari hasil turunannya adalah...",
+          options: ['v(x)', "v'(x)", '[v(x)]²'],
+          correct: 2,
+          hint: "Ingat rumus Quotient Rule: (u'v − uv') dibagi dengan kuadrat penyebut.",
+          explanation: "Quotient Rule memiliki rumus f'(x) = (u'v − uv') / v², sehingga penyebutnya adalah [v(x)]².",
+          steps: [
+            "Tulis rumus Quotient Rule: (u/v)' = (u'v − uv') / v²",
+            "Perhatikan bagian bawah (penyebut) selalu dikuadratkan: [v(x)]²"
+          ]
+        },
+        {
+          moduleTag: 'Module 03 • Advanced Derivatives',
+          q: "4. Turunan dari f(x) = cos(3x) adalah...",
+          options: ['−3 sin(3x)', '3 sin(3x)', '−sin(3x)'],
+          correct: 0,
+          hint: "Turunan cos(u) adalah −sin(u) · u'. Di sini u = 3x.",
+          explanation: "Menggabungkan turunan trigonometri dan Chain Rule menghasilkan −3 sin(3x).",
+          steps: [
+            "Misalkan u = 3x, maka u' = 3",
+            "Turunan cos(u) adalah −sin(u) · u'",
+            "f'(x) = −sin(3x) · 3 = −3 sin(3x)"
+          ]
+        },
+        {
+          moduleTag: 'Module 03 • Advanced Derivatives',
+          q: "5. Dengan Product Rule, turunan dari f(x) = x · sin(x) adalah...",
+          options: ['sin(x) + x cos(x)', 'cos(x)', 'x cos(x) − sin(x)'],
+          correct: 0,
+          hint: "Misalkan u = x (u' = 1) dan v = sin(x) (v' = cos(x)), lalu masukkan ke rumus u'v + uv'.",
+          explanation: "Product Rule pada x · sin(x) menghasilkan 1·sin(x) + x·cos(x).",
+          steps: [
+            "u = x → u' = 1",
+            "v = sin(x) → v' = cos(x)",
+            "f'(x) = u'v + uv' = (1)·sin(x) + x·cos(x) = sin(x) + x cos(x)"
+          ]
+        },
+        {
+          moduleTag: 'Module 03 • Advanced Derivatives',
+          q: "6. Dengan Chain Rule, turunan dari f(x) = (x² + 1)⁴ adalah...",
+          options: ['4(x² + 1)³', '8x(x² + 1)³', '8(x² + 1)³'],
+          correct: 1,
+          hint: "Turunkan pangkat 4 menjadi 4(x² + 1)³, lalu kalikan dengan turunan dalam d/dx(x² + 1) = 2x.",
+          explanation: "Chain Rule menghasilkan perkalian antara 4(x² + 1)³ dan turunan dalamnya yaitu 2x.",
+          steps: [
+            "Misalkan u = x² + 1 → u' = 2x",
+            "Turunan luar: 4u³ = 4(x² + 1)³",
+            "Kalikan dengan u': 4(x² + 1)³ · 2x = 8x(x² + 1)³"
+          ]
+        },
+        {
+          moduleTag: 'Module 03 • Advanced Derivatives',
+          q: "7. Turunan dari f(x) = sin(5x) adalah...",
+          options: ['5 cos(5x)', '−5 cos(5x)', 'cos(5x)'],
+          correct: 0,
+          hint: "Turunan sin(u) adalah cos(u) · u'. Di sini u = 5x sehingga u' = 5.",
+          explanation: "Dengan Chain Rule dan turunan sinus, diperoleh cos(5x) · 5 = 5 cos(5x).",
+          steps: [
+            "Misalkan u = 5x → u' = 5",
+            "Turunan sin(u) = cos(u) · u'",
+            "f'(x) = cos(5x) · 5 = 5 cos(5x)"
+          ]
+        },
+        {
+          moduleTag: 'Module 03 • Advanced Derivatives',
+          q: "8. Menggunakan Quotient Rule, turunan dari f(x) = x / (x + 1) adalah...",
+          options: ['1 / (x + 1)²', '(2x + 1) / (x + 1)²', '−1 / (x + 1)²'],
+          correct: 0,
+          hint: "Misalkan u = x (u' = 1) dan v = x + 1 (v' = 1). Hitung (u'v − uv') / v².",
+          explanation: "Pada pembilang: 1(x + 1) − x(1) = x + 1 − x = 1, sehingga hasilnya 1 / (x + 1)².",
+          steps: [
+            "u = x → u' = 1;  v = x + 1 → v' = 1",
+            "Pembilang: u'v − uv' = 1(x + 1) − x(1) = x + 1 − x = 1",
+            "Penyebut: v² = (x + 1)²",
+            "Hasil: f'(x) = 1 / (x + 1)²"
+          ]
+        },
+        {
+          moduleTag: 'Module 03 • Advanced Derivatives',
+          q: "9. Turunan dari f(x) = √(2x + 3) menggunakan Chain Rule adalah...",
+          options: ['1 / √(2x + 3)', '2 / √(2x + 3)', '1 / (2√(2x + 3))'],
+          correct: 0,
+          hint: "Tulis sebagai (2x + 3)^(1/2), turunkan pangkat 1/2 lalu kalikan dengan turunan dalamnya yaitu 2.",
+          explanation: "Faktor 1/2 dan 2 saling menghabiskan, menyisakan 1 / √(2x + 3).",
+          steps: [
+            "Ubah bentuk akar: f(x) = (2x + 3)^(1/2)",
+            "Turunan luar: (1/2)(2x + 3)^(−1/2)",
+            "Kalikan turunan dalam (u' = 2): (1/2)(2x + 3)^(−1/2) · 2 = (2x + 3)^(−1/2)",
+            "Hasil: f'(x) = 1 / √(2x + 3)"
+          ]
+        },
+        {
+          moduleTag: 'Module 03 • Advanced Derivatives',
+          q: "10. Dengan Product Rule, turunan dari f(x) = x² · (3x + 1) adalah...",
+          options: ['9x² + 2x', '6x² + 2x', '3x² + 2x'],
+          correct: 0,
+          hint: "Misalkan u = x² (u' = 2x) dan v = 3x + 1 (v' = 3), lalu hitung u'v + uv' dan sederhanakan.",
+          explanation: "Product Rule memberikan 2x(3x + 1) + x²(3) = 6x² + 2x + 3x² = 9x² + 2x.",
+          steps: [
+            "u = x² → u' = 2x",
+            "v = 3x + 1 → v' = 3",
+            "f'(x) = (2x)(3x + 1) + (x²)(3) = 6x² + 2x + 3x²",
+            "Gabungkan suku sejenis: f'(x) = 9x² + 2x"
+          ]
+        }
+      ],
+      4: [
+        {
+          moduleTag: 'Module 04 • Applications of Derivatives',
+          q: "1. Berapakah gradien garis singgung kurva f(x) = x² + 2x di titik x = 2?",
+          options: ['4', '6', '8'],
+          correct: 1,
+          hint: "Cari turunan pertama f'(x) terlebih dahulu, lalu masukkan x = 2.",
+          explanation: "Gradien garis singgung di x = 2 adalah nilai f'(2).",
+          steps: [
+            "Turunkan f(x) = x² + 2x → f'(x) = 2x + 2",
+            "Substitusikan x = 2: f'(2) = 2(2) + 2 = 6",
+            "Jadi gradien garis singgungnya m = 6"
+          ]
+        },
+        {
+          moduleTag: 'Module 04 • Applications of Derivatives',
+          q: "2. Titik stasioner dari fungsi f(x) = x² − 8x + 15 terjadi pada nilai x = ...",
+          options: ['x = 4', 'x = 8', 'x = −4'],
+          correct: 0,
+          hint: "Titik stasioner terjadi saat f'(x) = 0. Buat persamaan 2x − 8 = 0 lalu selesaikan untuk x.",
+          explanation: "Menyamakan turunan pertama dengan nol memberikan lokasi titik stasioner.",
+          steps: [
+            "Cari turunan pertama: f'(x) = 2x − 8",
+            "Tetapkan f'(x) = 0 → 2x − 8 = 0",
+            "2x = 8 → x = 4"
+          ]
+        },
+        {
+          moduleTag: 'Module 04 • Applications of Derivatives',
+          q: "3. Berapakah nilai minimum dari fungsi f(x) = x² − 4x + 9?",
+          options: ['2', '5', '9'],
+          correct: 1,
+          hint: "Cari x pembuat minimum dari f'(x) = 0 terlebih dahulu, lalu substitusikan nilai x tersebut kembali ke f(x)!",
+          explanation: "Setelah menemukan x stasioner, masukkan ke fungsi asli f(x) untuk mendapatkan nilai minimumnya.",
+          steps: [
+            "Cari turunan: f'(x) = 2x − 4",
+            "f'(x) = 0 → 2x − 4 = 0 → x = 2",
+            "Substitusikan x = 2 ke f(x): f(2) = (2)² − 4(2) + 9 = 4 − 8 + 9 = 5"
+          ]
+        },
+        {
+          moduleTag: 'Module 04 • Applications of Derivatives',
+          q: "4. Persamaan garis singgung kurva y = x² di titik (1, 1) adalah...",
+          options: ['y = 2x − 1', 'y = 2x + 1', 'y = x + 1'],
+          correct: 0,
+          hint: "Cari gradien m = y'(1) = 2(1) = 2, lalu gunakan rumus garis y − y₁ = m(x − x₁) dengan (x₁, y₁) = (1, 1).",
+          explanation: "Persamaan garis singgung dibentuk dari titik singgung (1, 1) dan gradien m = 2.",
+          steps: [
+            "Turunan y = x² adalah y' = 2x",
+            "Di x = 1, gradien m = 2(1) = 2",
+            "Gunakan y − y₁ = m(x − x₁) → y − 1 = 2(x − 1)",
+            "y = 2x − 2 + 1 → y = 2x − 1"
+          ]
+        },
+        {
+          moduleTag: 'Module 04 • Applications of Derivatives',
+          q: "5. Pada interval manakah fungsi f(x) = x² − 6x + 5 selalu naik?",
+          options: ['x > 3', 'x < 3', 'x > 6'],
+          correct: 0,
+          hint: "Syarat fungsi naik adalah f'(x) > 0. Selesaikan pertidaksamaan 2x − 6 > 0.",
+          explanation: "Fungsi naik saat turunan pertamanya bernilai positif (f'(x) > 0).",
+          steps: [
+            "Cari turunan pertama: f'(x) = 2x − 6",
+            "Syarat fungsi naik: f'(x) > 0 → 2x − 6 > 0",
+            "2x > 6 → x > 3"
+          ]
+        },
+        {
+          moduleTag: 'Module 04 • Applications of Derivatives',
+          q: "6. Berapakah nilai maksimum dari fungsi f(x) = −x² + 4x + 3?",
+          options: ['2', '7', '3'],
+          correct: 1,
+          hint: "Cari x pembuat maksimum dari f'(x) = −2x + 4 = 0, lalu masukkan nilai x itu ke f(x).",
+          explanation: "Titik puncak parabola terbuka ke bawah terjadi di x = 2 dengan nilai maksimum f(2) = 7.",
+          steps: [
+            "Cari turunan: f'(x) = −2x + 4",
+            "f'(x) = 0 → −2x + 4 = 0 → x = 2",
+            "Substitusikan x = 2 ke f(x): f(2) = −(2)² + 4(2) + 3 = −4 + 8 + 3 = 7"
+          ]
+        },
+        {
+          moduleTag: 'Module 04 • Applications of Derivatives',
+          q: "7. Posisi sebuah partikel dinyatakan oleh s(t) = t³ − 3t² + 5t (meter). Berapakah kecepatan partikel saat t = 2 detik?",
+          options: ['5 m/s', '9 m/s', '11 m/s'],
+          correct: 0,
+          hint: "Kecepatan v(t) adalah turunan pertama dari posisi s'(t). Turunkan s(t), lalu masukkan t = 2.",
+          explanation: "v(t) = s'(t) = 3t² − 6t + 5, sehingga pada t = 2 diperoleh 5 m/s.",
+          steps: [
+            "Cari fungsi kecepatan: v(t) = s'(t) = 3t² − 6t + 5",
+            "Substitusikan t = 2: v(2) = 3(2)² − 6(2) + 5",
+            "v(2) = 12 − 12 + 5 = 5 m/s"
+          ]
+        },
+        {
+          moduleTag: 'Module 04 • Applications of Derivatives',
+          q: "8. Persamaan garis singgung kurva y = x² + 1 di titik (2, 5) adalah...",
+          options: ['y = 4x − 3', 'y = 4x + 3', 'y = 2x + 1'],
+          correct: 0,
+          hint: "Cari gradien m = y'(2) = 2(2) = 4, lalu masukkan ke y − 5 = 4(x − 2).",
+          explanation: "Dengan gradien m = 4 dan titik (2, 5), persamaan garis singgungnya adalah y = 4x − 3.",
+          steps: [
+            "Turunan y = x² + 1 adalah y' = 2x",
+            "Di x = 2, gradien m = 2(2) = 4",
+            "y − y₁ = m(x − x₁) → y − 5 = 4(x − 2)",
+            "y = 4x − 8 + 5 → y = 4x − 3"
+          ]
+        },
+        {
+          moduleTag: 'Module 04 • Applications of Derivatives',
+          q: "9. Jumlah dua bilangan positif adalah 20. Agar hasil kalinya maksimum, kedua bilangan tersebut adalah...",
+          options: ['10 dan 10', '12 dan 8', '15 dan 5'],
+          correct: 0,
+          hint: "Misalkan bilangan pertama x dan kedua (20 − x). Maksimalkan fungsi hasil kali P(x) = x(20 − x) dengan P'(x) = 0.",
+          explanation: "Masalah optimasi sederhana ini mencapai maksimum saat x = 10 dan pasangannya 20 − 10 = 10.",
+          steps: [
+            "Buat model hasil kali: P(x) = x(20 − x) = 20x − x²",
+            "Turunkan: P'(x) = 20 − 2x",
+            "Tetapkan P'(x) = 0 → 20 − 2x = 0 → x = 10",
+            "Bilangan kedua = 20 − 10 = 10, jadi 10 dan 10"
+          ]
+        },
+        {
+          moduleTag: 'Module 04 • Applications of Derivatives',
+          q: "10. Jika pada titik x = a diketahui f'(a) = 0 dan turunan kedua f''(a) > 0, maka titik x = a merupakan...",
+          options: ['Titik maksimum lokal', 'Titik minimum lokal', 'Titik belok'],
+          correct: 1,
+          hint: "f''(a) > 0 berarti kurva cekung ke atas (seperti huruf U / mangkuk menghadap atas). Titik mendatar di dasarnya adalah titik apa?",
+          explanation: "Menurut Uji Turunan Kedua, f'(a) = 0 dan f''(a) > 0 menunjukkan kurva cekung ke atas sehingga x = a adalah titik minimum lokal.",
+          steps: [
+            "f'(a) = 0 menunjukkan x = a adalah titik stasioner",
+            "f''(a) > 0 menunjukkan kurva cekung ke atas di sekitar a",
+            "Maka titik tersebut berada di lembah (titik minimum lokal)"
+          ]
+        }
+      ]
+    };
 
     const DAILY_INSIGHTS = [
       "A derivative tells us how quickly a function changes at a particular point. It's the foundation of understanding motion, growth, and optimization.",
@@ -1234,7 +2204,6 @@
     const DEMO_EMAIL = 'demo@deriva.app';
 
     let currentInsightIdx = 0;
-    let finalQuizSubmitted = false;
 
     function normalizeEmail(email) {
       return (email || '').trim().toLowerCase();
@@ -1267,6 +2236,7 @@
           3: {},
           4: {}
         },
+        moduleQuizScores: {},
         quizScores: [],
         avgQuizScore: 0,
         streakDays: 1,
@@ -1335,6 +2305,7 @@
         user: { ...base.user, ...(saved?.user || {}) },
         moduleStatus: { ...base.moduleStatus, ...(saved?.moduleStatus || {}) },
         exerciseProgress: { ...base.exerciseProgress, ...(saved?.exerciseProgress || {}) },
+        moduleQuizScores: { ...(saved?.moduleQuizScores || {}) },
         quizScores: Array.isArray(saved?.quizScores) ? saved.quizScores : base.quizScores,
         weeklyActivity: Array.isArray(saved?.weeklyActivity) && saved.weeklyActivity.length === 7
           ? saved.weeklyActivity
@@ -1750,6 +2721,7 @@
     }
 
     function signOut() {
+      stopQuizTimer();
       state.isAuthenticated = false;
       localStorage.removeItem(SESSION_STORAGE_KEY);
       state = createFreshUserState();
@@ -1757,6 +2729,7 @@
       document.getElementById('form-signup').reset();
       document.getElementById('view-workspace').classList.add('hidden');
       document.getElementById('view-module').classList.add('hidden');
+      document.getElementById('view-quiz').classList.add('hidden');
       document.getElementById('view-auth').classList.remove('hidden');
       switchAuthMode('signin');
       showToast('Kamu telah keluar dari akun.');
@@ -1766,8 +2739,10 @@
        5. WORKSPACE NAVIGATION
        ======================================================================= */
     function enterWorkspace(page = 'dashboard') {
+      stopQuizTimer();
       document.getElementById('view-auth').classList.add('hidden');
       document.getElementById('view-module').classList.add('hidden');
+      document.getElementById('view-quiz').classList.add('hidden');
       document.getElementById('view-workspace').classList.remove('hidden');
       syncUserUI();
       navigateTo(page);
@@ -1873,15 +2848,15 @@
       const list = document.getElementById('materials-list');
       list.innerHTML = MODULES_DATA.map(mod => {
         const status = state.moduleStatus[mod.id] || 'up_next';
+        const bestQuiz = state.moduleQuizScores ? state.moduleQuizScores[mod.id] : undefined;
         const badgeMap = {
           completed: '<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold tracking-wider uppercase">Completed</span>',
           in_progress: '<span class="px-2.5 py-1 rounded-full bg-brand-50 text-brand-600 text-[10px] font-bold tracking-wider uppercase">In Progress</span>',
           up_next: '<span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold tracking-wider uppercase">Up Next</span>'
         };
         return `
-          <button onclick="openModule(${mod.id})"
-            class="w-full bg-white rounded-2xl border border-slate-200/80 hover:border-brand-300 p-4 sm:p-5 shadow-card flex items-center justify-between gap-4 text-left transition group">
-            <div class="flex items-center gap-4 min-w-0">
+          <div class="w-full bg-white rounded-2xl border border-slate-200/80 hover:border-brand-300 p-4 sm:p-5 shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition group">
+            <button type="button" onclick="openModule(${mod.id})" class="flex items-center gap-4 min-w-0 text-left flex-1">
               <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg font-serif shrink-0 group-hover:bg-brand-500 group-hover:text-white transition">
                 ${mod.icon}
               </div>
@@ -1891,9 +2866,18 @@
                 </div>
                 <p class="text-xs text-slate-500 mt-0.5 truncate">${mod.shortDesc}</p>
               </div>
+            </button>
+            <div class="flex flex-wrap items-center gap-2 shrink-0 sm:justify-end">
+              ${bestQuiz !== undefined
+                ? `<span class="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-bold">Quiz: ${bestQuiz}%</span>`
+                : ''}
+              ${badgeMap[status]}
+              <button type="button" onclick="openModuleQuiz(${mod.id})"
+                class="px-3.5 py-1.5 rounded-xl bg-brand-50 hover:bg-brand-500 text-brand-600 hover:text-white text-xs font-semibold transition">
+                📝 Quiz Materi
+              </button>
             </div>
-            <div class="shrink-0">${badgeMap[status]}</div>
-          </button>
+          </div>
         `;
       }).join('');
     }
@@ -1905,6 +2889,7 @@
       const mod = MODULES_DATA.find(m => m.id === moduleId);
       if (!mod) return;
 
+      stopQuizTimer();
       state.activeModuleId = moduleId;
       if (state.moduleStatus[moduleId] === 'up_next') {
         state.moduleStatus[moduleId] = 'in_progress';
@@ -1912,6 +2897,7 @@
       saveState();
 
       document.getElementById('view-workspace').classList.add('hidden');
+      document.getElementById('view-quiz').classList.add('hidden');
       document.getElementById('view-module').classList.remove('hidden');
       document.getElementById('mod-breadcrumb-title').textContent = mod.title;
 
@@ -1935,6 +2921,7 @@
         ${mod.topics.map(t => `<li><a href="#${t.id}" class="hover:text-brand-600 transition">${t.label}</a></li>`).join('')}
         <li><a href="#mod-video" class="hover:text-brand-600 transition">▶ Video Lesson</a></li>
         <li><a href="#mod-exercises" class="hover:text-brand-600 transition">✎ Practice Exercises</a></li>
+        <li><a href="#mod-quiz-cta" class="hover:text-brand-600 transition">📝 Module Quiz</a></li>
       `;
 
       const savedEx = state.exerciseProgress[moduleId] || {};
@@ -2045,6 +3032,19 @@
           </div>
         </div>
 
+        <!-- Module Quiz Call-to-Action Card -->
+        <div id="mod-quiz-cta" class="rounded-2xl auth-navy-bg text-white p-5 sm:p-6 shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4 scroll-mt-20">
+          <div>
+            <div class="text-[10px] font-bold tracking-[0.14em] uppercase text-blue-300 mb-1">Quiz Module ${mod.num}</div>
+            <h3 class="font-display font-bold text-base sm:text-lg">Uji pemahamanmu untuk ${mod.title}</h3>
+            <p class="text-xs text-blue-100/80 mt-1">Dilengkapi tombol bantuan (hint), skor otomatis, dan pembahasan langkah demi langkah.</p>
+          </div>
+          <button type="button" onclick="openModuleQuiz(${mod.id})"
+            class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-sm transition shrink-0 self-start sm:self-center">
+            Mulai Quiz Modul ${mod.num} →
+          </button>
+        </div>
+
         <!-- Bottom Action Bar -->
         <div class="flex flex-wrap items-center justify-between gap-3 pt-2 pb-10">
           <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
@@ -2150,73 +3150,460 @@
 
     function backToMaterials() {
       document.getElementById('view-module').classList.add('hidden');
+      document.getElementById('view-quiz').classList.add('hidden');
       document.getElementById('view-workspace').classList.remove('hidden');
       navigateTo('materials');
     }
 
     /* =======================================================================
-       9. FINAL QUIZ MODAL
+       9. DEDICATED QUIZ PAGE (PER MODULE & FINAL QUIZ + HINT + SCORE POPUP)
        ======================================================================= */
-    function openFinalQuiz() {
-      finalQuizSubmitted = false;
-      const body = document.getElementById('final-quiz-body');
-      body.innerHTML = FINAL_QUIZ_QUESTIONS.map((item, idx) => `
-        <div class="rounded-xl border border-slate-200 p-4 space-y-2.5">
-          <div class="text-xs sm:text-sm font-semibold text-slate-900">${item.q}</div>
-          <div class="space-y-1.5">
-            ${item.options.map((opt, optIdx) => `
-              <label class="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer text-xs text-slate-700">
-                <input type="radio" name="fq-${idx}" value="${optIdx}" class="accent-brand-500" />
-                <span>${opt}</span>
-              </label>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
+    const MODULE_QUIZ_DURATION_SECONDS = 15 * 60; // 15 menit
+    const FINAL_QUIZ_DURATION_SECONDS = 40 * 60;  // 40 menit
 
-      document.getElementById('fq-result-summary').textContent = 'Jawab semua 5 soal lalu klik Submit.';
-      const btn = document.getElementById('fq-submit-btn');
-      btn.disabled = false;
-      btn.textContent = 'Submit Quiz';
-      btn.classList.remove('opacity-60');
-      openModal('modal-final-quiz');
+    let activeQuizConfig = {
+      type: 'final',
+      moduleId: null,
+      eyebrow: 'Final Challenge • Calculus I',
+      title: 'Derivatives Final Quiz',
+      subtitle: 'Uji pemahamanmu dari seluruh modul turunan. Pilih jawaban terbaik untuk setiap soal.',
+      topbarTitle: 'Final Quiz',
+      durationSeconds: FINAL_QUIZ_DURATION_SECONDS,
+      questions: FINAL_QUIZ_QUESTIONS
+    };
+    let quizAnswers = {};
+    let quizHintsShown = {};
+    let quizCurrentIdx = 0;
+    let quizSubmitted = false;
+    let quizTimerInterval = null;
+    let quizSecondsElapsed = 0;
+    let quizSecondsRemaining = FINAL_QUIZ_DURATION_SECONDS;
+    let quizReturnView = 'workspace';
+    let quizReturnPage = 'materials';
+    let quizReturnModuleId = null;
+
+    function formatQuizTime(totalSeconds) {
+      const safeSec = Math.max(0, totalSeconds);
+      const mins = String(Math.floor(safeSec / 60)).padStart(2, '0');
+      const secs = String(safeSec % 60).padStart(2, '0');
+      return `${mins}:${secs}`;
     }
 
-    function submitFinalQuiz() {
-      if (finalQuizSubmitted) return;
-
-      let unanswered = 0;
-      let score = 0;
-      FINAL_QUIZ_QUESTIONS.forEach((item, idx) => {
-        const chosen = document.querySelector(`input[name="fq-${idx}"]:checked`);
-        if (!chosen) {
-          unanswered++;
-        } else if (parseInt(chosen.value, 10) === item.correct) {
-          score++;
+    function updateQuizTimerDisplay() {
+      const display = document.getElementById('quiz-timer-display');
+      const badge = document.getElementById('quiz-timer-badge');
+      if (display) display.textContent = formatQuizTime(quizSecondsRemaining);
+      if (badge) {
+        if (quizSecondsRemaining <= 60) {
+          badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-300 text-xs font-mono font-bold text-rose-700 animate-pulse transition-colors';
+        } else if (quizSecondsRemaining <= 180) {
+          badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-300 text-xs font-mono font-semibold text-amber-800 transition-colors';
+        } else {
+          badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs font-mono font-semibold text-slate-700 transition-colors';
         }
-      });
+      }
+    }
 
-      if (unanswered > 0) {
-        showToast(`Masih ada ${unanswered} soal yang belum dijawab.`, 'error');
+    function startQuizTimer(durationSeconds) {
+      stopQuizTimer();
+      quizSecondsElapsed = 0;
+      quizSecondsRemaining = durationSeconds;
+      updateQuizTimerDisplay();
+
+      quizTimerInterval = setInterval(() => {
+        quizSecondsElapsed++;
+        quizSecondsRemaining--;
+        updateQuizTimerDisplay();
+
+        if (quizSecondsRemaining === 60) {
+          showToast('Sisa waktu 1 menit lagi! Segera periksa jawabanmu.', 'error');
+        }
+
+        if (quizSecondsRemaining <= 0) {
+          stopQuizTimer();
+          showToast('Waktu pengerjaan habis! Jawabanmu otomatis dikumpulkan.', 'error');
+          submitFinalQuiz(true);
+        }
+      }, 1000);
+    }
+
+    function stopQuizTimer() {
+      if (quizTimerInterval) {
+        clearInterval(quizTimerInterval);
+        quizTimerInterval = null;
+      }
+    }
+
+    function launchQuizView(config) {
+      activeQuizConfig = config;
+      quizAnswers = {};
+      quizHintsShown = {};
+      quizCurrentIdx = 0;
+      quizSubmitted = false;
+
+      closeModal('modal-quiz-score');
+      document.getElementById('view-auth').classList.add('hidden');
+      document.getElementById('view-workspace').classList.add('hidden');
+      document.getElementById('view-module').classList.add('hidden');
+      document.getElementById('view-quiz').classList.remove('hidden');
+
+      document.getElementById('quiz-active-container').classList.remove('hidden');
+      document.getElementById('quiz-result-container').classList.add('hidden');
+
+      const durationMins = Math.round((config.durationSeconds || FINAL_QUIZ_DURATION_SECONDS) / 60);
+      document.getElementById('quiz-topbar-title').textContent = config.topbarTitle;
+      document.getElementById('quiz-hero-eyebrow').textContent = config.eyebrow;
+      document.getElementById('quiz-hero-title').textContent = config.title;
+      document.getElementById('quiz-hero-subtitle').textContent = config.subtitle;
+      document.getElementById('quiz-hero-count').textContent = `${config.questions.length} Soal • ${durationMins} Menit`;
+
+      startQuizTimer(config.durationSeconds || FINAL_QUIZ_DURATION_SECONDS);
+      renderQuizPage();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openModuleQuiz(moduleId) {
+      const mod = MODULES_DATA.find(m => m.id === moduleId);
+      const questions = MODULE_QUIZZES[moduleId];
+      if (!mod || !questions) return;
+
+      const isFromModuleView = !document.getElementById('view-module').classList.contains('hidden');
+      quizReturnView = isFromModuleView ? 'module' : 'workspace';
+      quizReturnModuleId = moduleId;
+      quizReturnPage = state.currentPage || 'materials';
+
+      launchQuizView({
+        type: 'module',
+        moduleId: mod.id,
+        eyebrow: `Quiz Module ${mod.num} • ${mod.level}`,
+        title: `Quiz: ${mod.title}`,
+        subtitle: `Jawab 10 pertanyaan khusus materi ${mod.title} dalam waktu 15 menit. Gunakan tombol bantuan jika butuh petunjuk.`,
+        topbarTitle: `Quiz Module ${mod.num}`,
+        durationSeconds: MODULE_QUIZ_DURATION_SECONDS,
+        questions
+      });
+    }
+
+    function openFinalQuiz() {
+      quizReturnView = 'workspace';
+      quizReturnModuleId = null;
+      quizReturnPage = state.currentPage || 'materials';
+
+      launchQuizView({
+        type: 'final',
+        moduleId: null,
+        eyebrow: 'Final Challenge • Calculus I',
+        title: 'Derivatives Final Quiz',
+        subtitle: 'Uji pemahamanmu dari seluruh modul turunan dalam waktu 40 menit. Pilih jawaban terbaik untuk setiap soal.',
+        topbarTitle: 'Final Quiz',
+        durationSeconds: FINAL_QUIZ_DURATION_SECONDS,
+        questions: FINAL_QUIZ_QUESTIONS
+      });
+    }
+
+    function retakeActiveQuiz() {
+      closeModal('modal-quiz-score');
+      if (activeQuizConfig.type === 'module' && activeQuizConfig.moduleId) {
+        openModuleQuiz(activeQuizConfig.moduleId);
+      } else {
+        openFinalQuiz();
+      }
+    }
+
+    function exitFinalQuiz(targetPage) {
+      stopQuizTimer();
+      closeModal('modal-quiz-score');
+      document.getElementById('view-quiz').classList.add('hidden');
+      if (!targetPage && quizReturnView === 'module' && quizReturnModuleId) {
+        openModule(quizReturnModuleId);
+        return;
+      }
+      document.getElementById('view-workspace').classList.remove('hidden');
+      navigateTo(targetPage || quizReturnPage || 'materials');
+    }
+
+    function closeQuizScoreAndExit() {
+      exitFinalQuiz();
+    }
+
+    function openQuizReviewFromModal() {
+      closeModal('modal-quiz-score');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleQuizHint() {
+      quizHintsShown[quizCurrentIdx] = !quizHintsShown[quizCurrentIdx];
+      renderQuizHintState();
+    }
+
+    function renderQuizHintState() {
+      const item = activeQuizConfig.questions[quizCurrentIdx];
+      const hintBox = document.getElementById('quiz-hint-box');
+      const hintText = document.getElementById('quiz-hint-text');
+      const hintLabel = document.getElementById('quiz-btn-hint-label');
+      const isShown = Boolean(quizHintsShown[quizCurrentIdx]);
+
+      if (hintText) hintText.textContent = item.hint || 'Perhatikan kembali rumus dasar pada modul ini.';
+      if (hintBox) hintBox.classList.toggle('hidden', !isShown);
+      if (hintLabel) hintLabel.textContent = isShown ? 'Sembunyikan Bantuan' : 'Lihat Bantuan / Hint';
+    }
+
+    function renderQuizPage() {
+      const questions = activeQuizConfig.questions;
+      const total = questions.length;
+      const item = questions[quizCurrentIdx];
+      const answeredCount = Object.keys(quizAnswers).length;
+      const pct = Math.round((answeredCount / total) * 100);
+
+      // Update headers & progress bar
+      document.getElementById('quiz-topbar-progress').textContent = `${answeredCount}/${total} Answered`;
+      document.getElementById('quiz-progress-label').textContent = `Progress pengerjaan: ${answeredCount} dari ${total} soal`;
+      document.getElementById('quiz-progress-pct').textContent = `${pct}%`;
+      document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+
+      // Question card content
+      document.getElementById('quiz-q-module-tag').textContent = item.moduleTag;
+      document.getElementById('quiz-q-counter').textContent = `Question ${quizCurrentIdx + 1} of ${total}`;
+      document.getElementById('quiz-q-text').textContent = item.q;
+      renderQuizHintState();
+
+      const selectedOpt = quizAnswers[quizCurrentIdx];
+      document.getElementById('quiz-options-list').innerHTML = item.options.map((opt, optIdx) => {
+        const isSelected = selectedOpt === optIdx;
+        const letter = String.fromCharCode(65 + optIdx);
+        return `
+          <button type="button" onclick="selectQuizOption(${quizCurrentIdx}, ${optIdx})"
+            class="w-full text-left p-4 rounded-2xl border transition flex items-center gap-3.5 ${
+              isSelected
+                ? 'border-brand-500 bg-brand-50/70 ring-2 ring-brand-500/15'
+                : 'border-slate-200/90 hover:border-brand-300 hover:bg-slate-50/80 bg-white'
+            }">
+            <span class="w-8 h-8 rounded-xl font-display font-bold text-xs flex items-center justify-center shrink-0 transition ${
+              isSelected ? 'bg-brand-500 text-white' : 'bg-slate-100 text-slate-600'
+            }">
+              ${letter}
+            </span>
+            <span class="text-xs sm:text-sm font-medium ${isSelected ? 'text-slate-900 font-semibold' : 'text-slate-700'}">
+              ${opt}
+            </span>
+          </button>
+        `;
+      }).join('');
+
+      // Prev / Next buttons
+      const prevBtn = document.getElementById('quiz-btn-prev');
+      const nextBtn = document.getElementById('quiz-btn-next');
+      prevBtn.disabled = quizCurrentIdx === 0;
+      nextBtn.textContent = quizCurrentIdx === total - 1 ? 'Submit Quiz ✓' : 'Next Question →';
+
+      // Navigator Grid
+      document.getElementById('quiz-nav-grid').innerHTML = questions.map((_, idx) => {
+        const isCurrent = idx === quizCurrentIdx;
+        const isAnswered = quizAnswers[idx] !== undefined;
+        let cls = 'h-10 rounded-xl font-display font-bold text-xs transition flex items-center justify-center ';
+        if (isCurrent) {
+          cls += isAnswered
+            ? 'bg-brand-600 text-white ring-2 ring-brand-300 shadow-sm'
+            : 'bg-white text-brand-600 border-2 border-brand-500';
+        } else if (isAnswered) {
+          cls += 'bg-brand-50 text-brand-700 border border-brand-200 hover:bg-brand-100';
+        } else {
+          cls += 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100';
+        }
+        return `<button type="button" onclick="goToQuizQuestion(${idx})" class="${cls}">${idx + 1}</button>`;
+      }).join('');
+    }
+
+    function selectQuizOption(qIdx, optIdx) {
+      if (quizSubmitted) return;
+      quizAnswers[qIdx] = optIdx;
+      renderQuizPage();
+    }
+
+    function goToQuizQuestion(idx) {
+      const total = activeQuizConfig.questions.length;
+      if (idx < 0 || idx >= total) return;
+      quizCurrentIdx = idx;
+      renderQuizPage();
+    }
+
+    function handleQuizNextOrSubmit() {
+      if (quizCurrentIdx < activeQuizConfig.questions.length - 1) {
+        goToQuizQuestion(quizCurrentIdx + 1);
+      } else {
+        submitFinalQuiz();
+      }
+    }
+
+    function submitFinalQuiz(forceSubmit = false) {
+      if (quizSubmitted) return;
+
+      const questions = activeQuizConfig.questions;
+      const total = questions.length;
+      const firstUnansweredIdx = questions.findIndex((_, idx) => quizAnswers[idx] === undefined);
+
+      if (!forceSubmit && firstUnansweredIdx !== -1) {
+        const remaining = total - Object.keys(quizAnswers).length;
+        showToast(`Masih ada ${remaining} soal yang belum dijawab. Dialihkan ke soal ${firstUnansweredIdx + 1}.`, 'error');
+        goToQuizQuestion(firstUnansweredIdx);
         return;
       }
 
-      finalQuizSubmitted = true;
-      const pct = Math.round((score / FINAL_QUIZ_QUESTIONS.length) * 100);
+      quizSubmitted = true;
+      stopQuizTimer();
+
+      let score = 0;
+      questions.forEach((item, idx) => {
+        if (quizAnswers[idx] === item.correct) score++;
+      });
+
+      const pct = Math.round((score / total) * 100);
       if (!Array.isArray(state.quizScores)) state.quizScores = [];
       state.quizScores.push(pct);
+
+      if (activeQuizConfig.type === 'module' && activeQuizConfig.moduleId) {
+        if (!state.moduleQuizScores) state.moduleQuizScores = {};
+        const prevBest = state.moduleQuizScores[activeQuizConfig.moduleId] || 0;
+        state.moduleQuizScores[activeQuizConfig.moduleId] = Math.max(prevBest, pct);
+        if (pct >= 75) {
+          state.moduleStatus[activeQuizConfig.moduleId] = 'completed';
+        } else if (state.moduleStatus[activeQuizConfig.moduleId] === 'up_next') {
+          state.moduleStatus[activeQuizConfig.moduleId] = 'in_progress';
+        }
+      }
+
       recalculateAverageScore();
-      recordLearningMinutes(15);
+      recordLearningMinutes(Math.max(5, Math.ceil(quizSecondsElapsed / 60)));
       saveState();
       syncUserUI();
 
-      document.getElementById('fq-result-summary').innerHTML =
-        `<span class="${pct >= 80 ? 'text-emerald-600' : 'text-brand-600'}">Skor kamu: ${score}/${FINAL_QUIZ_QUESTIONS.length} (${pct}%)</span>`;
-      const btn = document.getElementById('fq-submit-btn');
-      btn.disabled = true;
-      btn.textContent = 'Submitted ✓';
-      btn.classList.add('opacity-60');
-      showToast(`Final Quiz selesai! Skor: ${pct}%`, 'success');
+      renderQuizResult(score, total, pct);
+      showQuizScorePopup(score, total, pct);
+    }
+
+    function showQuizScorePopup(score, total, pct) {
+      const passed = pct >= 75;
+      document.getElementById('quiz-modal-emoji').textContent = pct === 100 ? '🏆' : passed ? '🎉' : '💪';
+      document.getElementById('quiz-modal-subtitle').textContent = activeQuizConfig.title;
+      document.getElementById('quiz-modal-title').textContent = pct === 100
+        ? 'Nilai Sempurna!'
+        : passed
+          ? 'Kerja Bagus!'
+          : 'Tetap Semangat!';
+      document.getElementById('quiz-modal-score').textContent = `${pct}%`;
+      document.getElementById('quiz-modal-detail').textContent = `${score} dari ${total} soal dijawab benar • Waktu ${formatQuizTime(quizSecondsElapsed)}`;
+      document.getElementById('quiz-modal-message').textContent = passed
+        ? 'Pemahamanmu sangat baik! Kamu bisa meninjau jawaban benar beserta langkah pengerjaannya di halaman review.'
+        : 'Jangan khawatir! Klik Review Jawaban & Pembahasan di bawah untuk melihat cara mengerjakan tiap soal dengan benar.';
+
+      openModal('modal-quiz-score');
+    }
+
+    function renderQuizResult(score, total, pct) {
+      document.getElementById('quiz-active-container').classList.add('hidden');
+      const resultEl = document.getElementById('quiz-result-container');
+      resultEl.classList.remove('hidden');
+
+      const questions = activeQuizConfig.questions;
+      const passed = pct >= 75;
+      const titleMsg = pct === 100
+        ? 'Luar Biasa! Nilai Sempurna 🎉'
+        : passed
+          ? 'Kerja Bagus! Kamu Menguasai Materi Ini 🚀'
+          : 'Terus Semangat! Mari Tinjau Pembahasannya 💪';
+
+      const reviewHtml = questions.map((item, idx) => {
+        const userAns = quizAnswers[idx];
+        const hasAnswered = userAns !== undefined;
+        const isCorrect = hasAnswered && userAns === item.correct;
+        const userAnswerLabel = hasAnswered
+          ? `${String.fromCharCode(65 + userAns)}. ${item.options[userAns]}`
+          : 'Tidak dijawab (waktu habis)';
+        const stepsHtml = Array.isArray(item.steps) && item.steps.length > 0
+          ? `
+            <div class="mt-2.5 pt-2.5 border-t border-brand-200/60">
+              <div class="text-[11px] font-bold text-brand-800 mb-1.5">Cara Mengerjakan:</div>
+              <ol class="space-y-1 font-mono text-[11px] sm:text-xs text-slate-700 list-decimal list-inside">
+                ${item.steps.map(s => `<li>${s}</li>`).join('')}
+              </ol>
+            </div>
+          `
+          : '';
+
+        return `
+          <div class="bg-white rounded-2xl border ${isCorrect ? 'border-emerald-200/90' : 'border-rose-200/90'} p-5 shadow-card space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-[11px] font-bold text-slate-400">${item.moduleTag}</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                isCorrect ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+              }">
+                ${isCorrect ? '✓ Benar' : (hasAnswered ? '✕ Kurang Tepat' : '⏱ Tidak Dijawab')}
+              </span>
+            </div>
+            <div class="font-display font-bold text-sm sm:text-base text-slate-900">${item.q}</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+              <div class="p-3 rounded-xl ${isCorrect ? 'bg-emerald-50/70 border border-emerald-100 text-emerald-800' : 'bg-rose-50/70 border border-rose-100 text-rose-800'}">
+                <div class="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-0.5">Jawaban Kamu</div>
+                <div class="font-semibold">${userAnswerLabel}</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/70 text-slate-800">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">Jawaban Benar</div>
+                <div class="font-semibold text-emerald-700">${String.fromCharCode(65 + item.correct)}. ${item.options[item.correct]}</div>
+              </div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-brand-50/60 border border-brand-100 text-xs text-slate-700 leading-relaxed">
+              <div><span class="font-bold text-brand-700">Penjelasan:</span> ${item.explanation}</div>
+              ${stepsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      resultEl.innerHTML = `
+        <!-- Score Hero Banner -->
+        <div class="auth-navy-bg text-white rounded-3xl p-6 sm:p-8 shadow-soft flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div class="space-y-2 max-w-xl">
+            <div class="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-blue-200 text-[11px] font-bold tracking-wider uppercase">
+              ${activeQuizConfig.title} • ${formatQuizTime(quizSecondsElapsed)}
+            </div>
+            <h1 class="font-display font-extrabold text-2xl sm:text-3xl leading-tight">${titleMsg}</h1>
+            <p class="text-xs sm:text-sm text-blue-100/80">
+              Kamu menjawab benar <strong>${score} dari ${total} soal</strong>. Skor dan progres belajarmu sudah otomatis tersimpan.
+            </p>
+            <div class="flex flex-wrap items-center gap-3 pt-2">
+              <button onclick="retakeActiveQuiz()"
+                class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-sm transition">
+                ↻ Ulangi Quiz
+              </button>
+              <button onclick="exitFinalQuiz('materials')"
+                class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition">
+                Kembali ke Materi
+              </button>
+              <button onclick="exitFinalQuiz('dashboard')"
+                class="px-4 py-2.5 rounded-xl text-blue-200 hover:text-white text-xs font-semibold transition">
+                Ke Dashboard →
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white/10 border border-white/15 rounded-2xl px-8 py-6 text-center shrink-0 self-stretch md:self-auto flex flex-col justify-center">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-blue-200/80 mb-1">Skor Akhir</div>
+            <div class="font-display font-extrabold text-5xl text-white">${pct}%</div>
+            <div class="text-xs text-blue-200 mt-1">${score}/${total} Benar</div>
+          </div>
+        </div>
+
+        <!-- Detailed Review -->
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-display font-bold text-lg text-slate-900">Review Jawaban & Cara Mengerjakan</h2>
+            <span class="text-xs text-slate-500">${total} soal dibahas</span>
+          </div>
+          ${reviewHtml}
+        </div>
+      `;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     /* =======================================================================
